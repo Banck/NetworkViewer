@@ -6,16 +6,16 @@
 
 import SwiftUI
 
-public struct SettingsToggleRow: View {
+struct SettingsToggleRow: View {
    
-    public class Data: RowIdentifible, ObservableObject {
+    class Data: RowIdentifible, ObservableObject {
 
-        public var id: String
-        public let title: String
-        @Published public var isOn: Bool
-        public var onChangeToggle: (_ isOn: Bool) -> Void
+        var id: String
+        let title: String
+        @Published var isOn: Bool
+        var onChangeToggle: (_ isOn: Bool) -> Void
 
-        public init(
+        init(
             id: String? = nil,
             title: String,
             isOn: Bool,
@@ -30,11 +30,11 @@ public struct SettingsToggleRow: View {
 
     @ObservedObject private var data: Data
 
-    public init(data: Data) {
+    init(data: Data) {
         self.data = data
     }
 
-    public var body: some View {
+    var body: some View {
         HStack() {
             Text(data.title)
                 .font(.system(size: 17, weight: .medium))

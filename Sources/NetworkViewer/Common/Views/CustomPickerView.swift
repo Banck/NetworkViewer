@@ -6,17 +6,17 @@
 
 import SwiftUI
 
-public struct CustomPickerView: View {
+struct CustomPickerView: View {
 
-    public class Data: RowIdentifible, ObservableObject {
+    class Data: RowIdentifible, ObservableObject {
 
-        public var id: String
+        var id: String
         let title: String
         @Published var selectedOption: String
         let options: [String]
-        public var onChangeValue: (_ value: String) -> Void
+        var onChangeValue: (_ value: String) -> Void
 
-        public init(
+        init(
             id: String? = nil,
             title: String,
             selectedOption: String,
@@ -33,11 +33,11 @@ public struct CustomPickerView: View {
 
     @ObservedObject private var data: Data
 
-    public init(data: Data) {
+    init(data: Data) {
         self.data = data
     }
 
-    public var body: some View {
+    var body: some View {
         Picker(data.title, selection: $data.selectedOption) {
             ForEach(data.options, id: \.self) {
                 Text($0)

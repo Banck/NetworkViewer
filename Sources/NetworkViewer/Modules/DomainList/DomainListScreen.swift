@@ -11,20 +11,36 @@
 
 import SwiftUI
 
-struct DomainListScreen: View, DomainListView {
+struct DomainListScreen: View {
 
-    @StateObject var presenter: DomainListPresenter
+    @StateObject var viewModel: DomainListViewModel
 
     var body: some View {
-        Text("Hello")
-            .onAppear {
-                presenter.viewWillAppear()
+        NavigationView {
+            List(viewModel.domainsData, id: \.title) { data in
+                CustomContentNavigationLink(
+                    contentView: {
+                        SettingsDetailedRow(data: data)
+                    },
+                    destination: {
+                        OperationListConfigurator.createModule().view
+                    }
+                )
+                .listRowInsets(.zero)
             }
+            .navigationTitle("Domains")
+        }
     }
 }
 
 
 #Preview {
-    let module = DomainListConfigurator.createModule()
+    let domainList: [DomainData] = [
+        .init(domain: "google.com", operationsCount: 4, isPinned: false),
+        .init(domain: "apple.com", operationsCount: 23, isPinned: true),
+        .init(domain: "medium.com", operationsCount: 9, isPinned: true),
+        .init(domain: "youtube.com", operationsCount: 173, isPinned: false)
+    ]
+    let module = DomainListConfigurator.createModule(domainList: domainList)
     return module.view
 }

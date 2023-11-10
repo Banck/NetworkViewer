@@ -15,18 +15,12 @@ import SwiftUI
 struct DomainListConfigurator {
 
     static func createModule(
+        domainList: [DomainData],
         output: DomainListModuleOutput? = nil
     ) -> (view: some View, input: DomainListModuleInput) {
-        let interactor = DomainListInteractor()
-        let presenter = DomainListPresenter(
-            interactor: interactor,
-            output: output
-        )
-        let view = DomainListScreen(presenter: presenter)
+        let viewModel = DomainListViewModel(domainList: domainList, output: output)
+        let view = DomainListScreen(viewModel: viewModel)
 
-        presenter.view = view
-        interactor.presenter = presenter
-
-        return (view, presenter)
+        return (view, viewModel)
     }
 }

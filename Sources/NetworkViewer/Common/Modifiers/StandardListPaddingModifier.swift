@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-public struct StandardListPaddingModifier: ViewModifier {
+struct StandardListPaddingModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
@@ -16,7 +16,7 @@ public struct StandardListPaddingModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
 
     func standardListPadding() -> some View {
         modifier(StandardListPaddingModifier())

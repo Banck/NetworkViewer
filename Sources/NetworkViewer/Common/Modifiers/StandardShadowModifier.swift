@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-public struct StandardShadowModifier: ViewModifier {
+struct StandardShadowModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
@@ -15,7 +15,7 @@ public struct StandardShadowModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
 
     func standardShadow() -> some View {
         modifier(StandardShadowModifier())

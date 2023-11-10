@@ -7,22 +7,30 @@
 import Foundation
 import SwiftUI
 
-public struct SettingsDetailedRow: View {
+struct SettingsDetailedRow: View {
 
-    public struct Data: RowIdentifible {
+    struct Data: RowIdentifible {
 
-        public var id: String
-        public let title: String
-        public var detail: String?
-        public var disclosureIndicator: Bool
+        struct Icon {
+            let image: UIImage
+            let color: Color?
+        }
 
-        public init(
+        var id: String
+        let icon: Icon?
+        let title: String
+        var detail: String?
+        var disclosureIndicator: Bool
+
+        init(
             id: String? = nil,
+            icon: Icon? = nil,
             title: String,
             detail: String? = nil,
             disclosureIndicator: Bool = false
         ) {
             self.id = id ?? title
+            self.icon = icon
             self.title = title
             self.detail = detail
             self.disclosureIndicator = disclosureIndicator
@@ -33,14 +41,18 @@ public struct SettingsDetailedRow: View {
 
     // "proxy" size
     @State private var contentSize: CGSize = .zero
-    @State private var selectedValue: String = "A"
 
-    public init(data: Data) {
+    init(data: Data) {
         self.data = data
     }
 
-    public var body: some View {
+    var body: some View {
         HStack() {
+            if let icon = data.icon {
+                Image(uiImage: icon.image)
+                    .renderingMode(icon.color != nil ? .template : .original)
+                    .foregroundColor(icon.color)
+            }
             Text(data.title)
                 .font(.system(size: 17, weight: .medium))
                 .frame(
@@ -61,6 +73,7 @@ public struct SettingsDetailedRow: View {
             }
             if data.disclosureIndicator {
                 Image(systemName: "chevron.right")
+                    .foregroundColor(.secondary)
             }
         }
         .standardListPadding()
@@ -79,12 +92,30 @@ public struct SettingsDetailedRow: View {
 }
 
 #Preview {
-    SettingsDetailedRow(
-        data: .init(
-            id: nil,
-            title: "Test Title",
-            detail: "Test Detail",
-            disclosureIndicator: true
+    List {
+        SettingsDetailedRow(
+            data: .init(
+                id: nil,
+                icon: .init(
+                    image: .init(systemName: "folder")!,
+                    color: .blue
+                ),
+                title: "Test Title",
+                detail: "Test Detail",
+                disclosureIndicator: true
+            )
         )
-    )
+        SettingsDetailedRow(
+            data: .init(
+                id: nil,
+                icon: .init(
+                    image: .init(systemName: "network")!,
+                    color: .blue
+                ),
+                title: "Test Title",
+                detail: "Test Detail",
+                disclosureIndicator: true
+            )
+        )
+    }
 }

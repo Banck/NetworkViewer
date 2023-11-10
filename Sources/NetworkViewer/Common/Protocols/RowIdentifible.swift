@@ -6,7 +6,7 @@
 
 import Foundation
 
-public protocol RowIdentifible: Identifiable {
+protocol RowIdentifible: Identifiable {
 
     var id: String { get set }
 }

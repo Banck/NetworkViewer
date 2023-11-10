@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-public struct HideScrollndicatorsModifier: ViewModifier {
+struct HideScrollndicatorsModifier: ViewModifier {
 
     @ViewBuilder
     public func body(content: Content) -> some View {
@@ -20,7 +20,7 @@ public struct HideScrollndicatorsModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
 
     func hideScrollIndicators() -> some View {
         modifier(HideScrollndicatorsModifier())

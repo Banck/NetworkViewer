@@ -22,7 +22,9 @@ struct DomainListModuleOutput {
 }
 
 // MARK: - Presenter
-protocol DomainListPresenterInterface: ObservableObject {
+protocol DomainListViewModelInterface: ObservableObject {
+
+    var domainsData: [SettingsDetailedRow.Data] { get }
 
     // MARK: - Lifecycle
     func viewDidLoad()
@@ -30,29 +32,9 @@ protocol DomainListPresenterInterface: ObservableObject {
     func viewWillDisappear()
 }
 
-extension DomainListPresenterInterface {
+extension DomainListViewModelInterface {
 
     func viewDidLoad() {/*leaves this empty*/}
     func viewWillAppear() {/*leaves this empty*/}
     func viewWillDisappear() {/*leaves this empty*/}
-}
-
-
-
-// MARK: - Interactor
-protocol DomainListInteractorOutput: AnyObject {
-
-    /* Interactor -> Presenter */
-}
-
-protocol DomainListInteractorInput: AnyObject {
-
-    var presenter: DomainListInteractorOutput? { get set }
-
-    /* Presenter -> Interactor */
-}
-
-// MARK: - View
-protocol DomainListView {
-
 }

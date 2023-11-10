@@ -9,7 +9,7 @@ import SwiftUI
 
 private let rainbowDebugColors = [Color.purple, Color.blue, Color.green, Color.yellow, Color.orange, Color.red]
 
-public extension View {
+extension View {
 
     /// Useful modifier for debugging view redrawing
     @ViewBuilder

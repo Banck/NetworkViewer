@@ -8,7 +8,7 @@ import Foundation
 import SwiftUI
 
 /// Wrapper for .tint iOS 16+.
-public struct TintModifier: ViewModifier {
+struct TintModifier: ViewModifier {
 
     public var color: Color
 
@@ -21,7 +21,7 @@ public struct TintModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
 
     /// Wrapper for .tint iOS 16+.
     func tintColor(_ color: Color) -> some View {

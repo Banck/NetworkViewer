@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-public extension EdgeInsets {
+extension EdgeInsets {
 
     static var zero: EdgeInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
 }
