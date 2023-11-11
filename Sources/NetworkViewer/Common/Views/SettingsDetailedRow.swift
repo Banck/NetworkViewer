@@ -16,20 +16,30 @@ struct SettingsDetailedRow: View {
             let color: Color?
         }
 
+        struct TextData {
+            let text: String
+            let font: Font?
+
+            init(text: String, font: Font? = nil) {
+                self.text = text
+                self.font = font
+            }
+        }
+
         var id: String
         let icon: Icon?
-        let title: String
-        var detail: String?
+        let title: TextData
+        var detail: TextData?
         var disclosureIndicator: Bool
 
         init(
             id: String? = nil,
             icon: Icon? = nil,
-            title: String,
-            detail: String? = nil,
+            title: TextData,
+            detail: TextData? = nil,
             disclosureIndicator: Bool = false
         ) {
-            self.id = id ?? title
+            self.id = id ?? title.text
             self.icon = icon
             self.title = title
             self.detail = detail
@@ -53,22 +63,18 @@ struct SettingsDetailedRow: View {
                     .renderingMode(icon.color != nil ? .template : .original)
                     .foregroundColor(icon.color)
             }
-            Text(data.title)
-                .font(.system(size: 17, weight: .medium))
+            Text(data.title.text)
+                .font(data.title.font ?? .system(size: 17, weight: .medium))
                 .frame(
-                    maxWidth: contentSize.width / 2,
+                    maxWidth: contentSize.width,
                     alignment: .leading
                 )
             Spacer()
-            if let detail = data.detail, !detail.isEmpty {
-                Text(detail)
-                    .frame(
-                        maxWidth: contentSize.width / 2,
-                        alignment: .trailing
-                    )
+            if let detail = data.detail, !detail.text.isEmpty {
+                Text(detail.text)
                     .multilineTextAlignment(.trailing)
                     .lineLimit(2)
-                    .font(.system(size: 15))
+                    .font(detail.font ?? .system(size: 15))
                     .foregroundColor(.secondary)
             }
             if data.disclosureIndicator {
@@ -100,8 +106,32 @@ struct SettingsDetailedRow: View {
                     image: .init(systemName: "folder")!,
                     color: .blue
                 ),
-                title: "Test Title",
-                detail: "Test Detail",
+                title: .init(text: "Test title"),
+                detail: .init(text: "Test detail"),
+                disclosureIndicator: true
+            )
+        )
+        SettingsDetailedRow(
+            data: .init(
+                id: nil,
+                icon: .init(
+                    image: .init(systemName: "folder")!,
+                    color: .blue
+                ),
+                title: .init(text: "Long long long long title"),
+                detail: .init(text: "Short detail"),
+                disclosureIndicator: true
+            )
+        )
+        SettingsDetailedRow(
+            data: .init(
+                id: nil,
+                icon: .init(
+                    image: .init(systemName: "folder")!,
+                    color: .blue
+                ),
+                title: .init(text: "Long long long long title"),
+                detail: .init(text: "Long long long long long long Detail"),
                 disclosureIndicator: true
             )
         )
@@ -112,8 +142,8 @@ struct SettingsDetailedRow: View {
                     image: .init(systemName: "network")!,
                     color: .blue
                 ),
-                title: "Test Title",
-                detail: "Test Detail",
+                title: .init(text: "Title"),
+                detail: .init(text: "Long long long long long long Detail"),
                 disclosureIndicator: true
             )
         )

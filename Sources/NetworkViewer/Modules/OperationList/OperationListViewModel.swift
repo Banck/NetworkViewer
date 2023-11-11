@@ -14,8 +14,13 @@ import Foundation
 class OperationListViewModel: OperationListViewModelInterface, ObservableObject {
 
     private var output: OperationListModuleOutput?
+    private let operations: [NetworkViewer.Operation]
+    var title: String {
+        URL(string: operations.first?.request.url ?? "")?.host ?? ""
+    }
 
-    init(output:OperationListModuleOutput? = nil) {
+    init(operations: [NetworkViewer.Operation], output: OperationListModuleOutput? = nil) {
+        self.operations = operations
         self.output = output
     }
 }

@@ -24,7 +24,11 @@ struct DomainListModuleOutput {
 // MARK: - Presenter
 protocol DomainListViewModelInterface: ObservableObject {
 
-    var domainsData: [SettingsDetailedRow.Data] { get }
+    var domainsData: [DomainData] { get }
+    var pinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
+    var unpinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
+
+    func operations(forId id: String) -> [NetworkViewer.Operation]
 
     // MARK: - Lifecycle
     func viewDidLoad()

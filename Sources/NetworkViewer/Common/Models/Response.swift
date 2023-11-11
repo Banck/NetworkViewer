@@ -7,31 +7,33 @@
 
 import Foundation
 
-public struct Response: Codable {
+public extension NetworkViewer {
 
-    public let statusCode: Int
-    public let headers: [Header]
+    struct Response: Codable {
 
-    public init(statusCode: Int, headers: [Header]) {
-        self.statusCode = statusCode
-        self.headers = headers
-    }
+        public let statusCode: Int
+        public let headers: [String: String]
 
-    public init?(_ response: URLResponse) {
-        if let httpResponse = response as? HTTPURLResponse {
-            statusCode = httpResponse.statusCode
-            headers = httpResponse.allHeaderFields.map {
-                Header(
-                    key: $0.key as? String ?? "Unknown Key",
-                    value: $0.value as? String ?? "Unknown Value"
-                )
+        public init(statusCode: Int, headers: [String: String]) {
+            self.statusCode = statusCode
+            self.headers = headers
+        }
+
+        public init?(_ response: URLResponse) {
+            if let httpResponse = response as? HTTPURLResponse {
+                statusCode = httpResponse.statusCode
+                var headers: [String: String] = [:]
+                httpResponse.allHeaderFields.forEach {
+                    headers[$0.key as? String ?? "Unknown key"] = $0.value as? String ?? "Unknown value"
+                }
+                self.headers = headers
+            } else {
+                statusCode = 200
+                headers = [
+                    "Content-Length": "\(response.expectedContentLength)",
+                    "Content-Type": response.mimeType ?? "plain/text"
+                ]
             }
-        } else {
-            statusCode = 200
-            headers = [
-                Header(key: "Content-Length", value: "\(response.expectedContentLength)"),
-                Header(key: "Content-Type", value: response.mimeType ?? "plain/text")
-            ]
         }
     }
 }

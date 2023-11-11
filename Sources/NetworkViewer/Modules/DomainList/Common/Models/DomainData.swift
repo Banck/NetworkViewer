@@ -9,7 +9,6 @@ import Foundation
 
 struct DomainData {
 
-    let domain: String
-    let operationsCount: Int
+    let cellData: SettingsDetailedRow.Data
     let isPinned: Bool
 }

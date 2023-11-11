@@ -17,30 +17,70 @@ struct DomainListScreen: View {
 
     var body: some View {
         NavigationView {
-            List(viewModel.domainsData, id: \.title) { data in
-                CustomContentNavigationLink(
-                    contentView: {
-                        SettingsDetailedRow(data: data)
-                    },
-                    destination: {
-                        OperationListConfigurator.createModule().view
-                    }
-                )
-                .listRowInsets(.zero)
+            List() {
+                sectionForDomains(isPinned: true)
+                sectionForDomains(isPinned: false)
             }
             .navigationTitle("Domains")
+        }
+    }
+
+    @ViewBuilder
+    func sectionForDomains(isPinned: Bool) -> some View {
+        let cellsData = isPinned
+        ? viewModel.pinnedDomainCellsData
+        : viewModel.unpinnedDomainCellsData
+        if cellsData.isEmpty {
+            EmptyView()
+        } else {
+            Section {
+                ForEach(cellsData, id: \.id) { data in
+                    CustomContentNavigationLink(
+                        contentView: {
+                            SettingsDetailedRow(data: data)
+                        },
+                        destination: {
+                            OperationListConfigurator.createModule(operations: viewModel.operations(forId: data.id)).view
+                        }
+                    )
+                    .listRowInsets(.zero)
+                }
+            } header: {
+                if isPinned {
+                    Text("isPinned")
+                }
+            } footer: { }
         }
     }
 }
 
 
 #Preview {
-    let domainList: [DomainData] = [
-        .init(domain: "google.com", operationsCount: 4, isPinned: false),
-        .init(domain: "apple.com", operationsCount: 23, isPinned: true),
-        .init(domain: "medium.com", operationsCount: 9, isPinned: true),
-        .init(domain: "youtube.com", operationsCount: 173, isPinned: false)
+    let googleOperation = NetworkViewer.Operation(
+        request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970,
+        endAt: Date().timeIntervalSince1970 + 60
+    )
+    let appleOperation = NetworkViewer.Operation(
+        request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970 - 30,
+        endAt: Date().timeIntervalSince1970 + 30
+    )
+    let appleSecondOperation = NetworkViewer.Operation(
+        request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970 + 10,
+        endAt: Date().timeIntervalSince1970 + 30
+    )
+
+    let operations: [NetworkViewer.Operation] = [
+        googleOperation, appleOperation, googleOperation, appleSecondOperation, googleOperation
     ]
-    let module = DomainListConfigurator.createModule(domainList: domainList)
+    let module = DomainListConfigurator.createModule(operations: operations)
     return module.view
 }

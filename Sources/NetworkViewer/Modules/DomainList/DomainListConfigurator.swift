@@ -15,10 +15,10 @@ import SwiftUI
 struct DomainListConfigurator {
 
     static func createModule(
-        domainList: [DomainData],
+        operations: [NetworkViewer.Operation],
         output: DomainListModuleOutput? = nil
     ) -> (view: some View, input: DomainListModuleInput) {
-        let viewModel = DomainListViewModel(domainList: domainList, output: output)
+        let viewModel = DomainListViewModel(operations: operations, output: output)
         let view = DomainListScreen(viewModel: viewModel)
 
         return (view, viewModel)

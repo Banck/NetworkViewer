@@ -7,15 +7,28 @@
 
 import Foundation
 
-public struct Operation {
+public extension NetworkViewer {
+    
+    struct Operation {
 
-    let request: Request
-    let response: Response?
-    let error: CustomError?
+        let request: Request
+        let response: Response?
+        let error: CustomError?
+        let startAt: TimeInterval
+        let endAt: TimeInterval?
 
-    public init(request: Request, response: Response?, error: CustomError?) {
-        self.request = request
-        self.response = response
-        self.error = error
+        public init(
+            request: Request,
+            response: Response?,
+            error: CustomError?,
+            startAt: TimeInterval,
+            endAt: TimeInterval?
+        ) {
+            self.request = request
+            self.response = response
+            self.error = error
+            self.startAt = startAt
+            self.endAt = endAt
+        }
     }
 }

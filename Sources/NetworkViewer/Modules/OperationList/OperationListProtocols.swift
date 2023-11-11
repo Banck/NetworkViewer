@@ -24,6 +24,8 @@ struct OperationListModuleOutput {
 // MARK: - Presenter
 protocol OperationListViewModelInterface: ObservableObject {
 
+    var title: String {get }
+
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

@@ -7,22 +7,25 @@
 
 import Foundation
 
-public struct CustomError: Codable {
+public extension NetworkViewer {
 
-    public let code: Int
-    public let message: String
+    struct CustomError: Codable {
 
-    public init(code: Int, message: String) {
-        self.code = code
-        self.message = message
-    }
+        public let code: Int
+        public let message: String
 
-    public init(_ error: NSError) {
-        self.init(code: error.code, message: error.localizedDescription)
-    }
+        public init(code: Int, message: String) {
+            self.code = code
+            self.message = message
+        }
 
-    public init(_ error: Error) {
-        let nsError = error as NSError
-        self.init(nsError)
+        public init(_ error: NSError) {
+            self.init(code: error.code, message: error.localizedDescription)
+        }
+
+        public init(_ error: Error) {
+            let nsError = error as NSError
+            self.init(nsError)
+        }
     }
 }

@@ -10,9 +10,10 @@ import SwiftUI
 
 public class NetworkViewer {
 
-    public private(set) static var operations: [Operation] = []
+    public private(set) static var operations: [NetworkViewer.Operation] = []
+    public static var invokeByShake: Bool = false
 
-    public static func addOperation(_ operation: Operation) {
+    public static func addOperation(_ operation: NetworkViewer.Operation) {
         operations.append(operation)
     }
 
@@ -22,15 +23,16 @@ public class NetworkViewer {
      **/
     public static func show(operations: [Operation] = operations) {
         guard let topController = UIApplication.topViewController() else { return }
-        let operationsByDomain = Dictionary(grouping: operations) { URL(string: $0.request.url)?.host ?? $0.request.url }
-        let domainList: [DomainData] = operationsByDomain.map { (domain: String, operations: [Operation]) in
-                .init(
-                    domain: domain,
-                    operationsCount: operations.count,
-                    isPinned: false
-                )
-        }
-        let module = DomainListConfigurator.createModule(domainList: domainList)
+        let module = DomainListConfigurator.createModule(operations: operations)
         topController.present(UIHostingController(rootView: module.view), animated: true)
+    }
+}
+
+// MARK: - Shake invokation
+extension UIWindow {
+
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        guard NetworkViewer.invokeByShake,  motion == .motionShake else { return }
+        NetworkViewer.show()
     }
 }

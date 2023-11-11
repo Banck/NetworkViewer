@@ -7,24 +7,27 @@
 
 import Foundation
 
-public struct Request: Codable {
+public extension NetworkViewer {
 
-    public let url: String
-    public let method: String
-    public let headers: [Header]
-    public let body: Data?
+    struct Request: Codable {
 
-    public init(url: String, method: String, headers: [Header], body: Data?) {
-        self.url = url
-        self.method = method
-        self.headers = headers
-        self.body = body
-    }
+        public let url: String
+        public let method: String
+        public let headers: [String: String]
+        public let body: Data?
 
-    public init(_ urlRequest: URLRequest) {
-        url = urlRequest.url?.absoluteString ?? "-"
-        method = urlRequest.httpMethod ?? "-"
-        headers = urlRequest.allHTTPHeaderFields?.map { Header(key: $0.key, value: $0.value ) } ?? []
-        body = urlRequest.httpBody
+        public init(url: String, method: String, headers: [String: String], body: Data?) {
+            self.url = url
+            self.method = method
+            self.headers = headers
+            self.body = body
+        }
+
+        public init(_ urlRequest: URLRequest) {
+            url = urlRequest.url?.absoluteString ?? "-"
+            method = urlRequest.httpMethod ?? "-"
+            headers = urlRequest.allHTTPHeaderFields ?? [:]
+            body = urlRequest.httpBody
+        }
     }
 }

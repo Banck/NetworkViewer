@@ -16,15 +16,44 @@ struct OperationListScreen: View, OperationListView {
     @StateObject var viewModel: OperationListViewModel
 
     var body: some View {
-        Text("Hello")
-            .onAppear {
-                viewModel.viewWillAppear()
-            }
-            .navigationBarTitleDisplayMode(.inline)
+        List {
+            Text(viewModel.title)
+            
+        }
+        .navigationTitle(viewModel.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            viewModel.viewWillAppear()
+        }
     }
 }
 
 #Preview {
-    let module = OperationListConfigurator.createModule()
+    let firstOperation = NetworkViewer.Operation(
+        request: .init(url: "https://google.com/api/ai", method: "POST", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970 - 60,
+        endAt: Date().timeIntervalSince1970 - 55
+    )
+    let secondOperation = NetworkViewer.Operation(
+        request: .init(url: "https://google.com/api/images", method: "GET", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970 - 50,
+        endAt: Date().timeIntervalSince1970 - 40
+    )
+    let thirdOperation = NetworkViewer.Operation(
+        request: .init(url: "https://google.com/api/search?text=test", method: "POST", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970 - 30,
+        endAt: Date().timeIntervalSince1970
+    )
+
+    let operations: [NetworkViewer.Operation] = [
+        firstOperation, secondOperation, thirdOperation
+    ]
+    let module = OperationListConfigurator.createModule(operations: operations)
     return module.view
 }
