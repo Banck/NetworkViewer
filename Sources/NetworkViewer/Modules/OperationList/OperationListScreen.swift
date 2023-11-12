@@ -24,7 +24,7 @@ struct OperationListScreen: View, OperationListView {
                     EmptyView()
                 }
             } label: {
-                OperationRow.init(data: data)
+                OperationRow(data: data)
             }
         }
         .listStyle(.inset)

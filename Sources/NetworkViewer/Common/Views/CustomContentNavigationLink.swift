@@ -1,12 +1,11 @@
 //
-//  SwiftUIView.swift
+//  CustomContentNavigationLink.swift
 //  
 //
 //  Created by Sakhabaev Egor on 10.11.2023.
 //
 
 import SwiftUI
-
 
 struct CustomContentNavigationLink<ContentView: View, Destination: View>: View {
 

@@ -40,9 +40,9 @@ private extension DomainListViewModel {
     func prepareDomainsData() {
         domainsData = operationsByDomain
             .sorted { lhs, rhs in
-                let lhsMin = lhs.value.min { $0.startAt > $1.startAt }
-                let rhsMin = rhs.value.min { $0.startAt > $1.startAt }
-                return (lhsMin?.startAt ?? 0) < (rhsMin?.startAt ?? 0)
+                let lhsMin = lhs.value.min { $0.startAt < $1.startAt }
+                let rhsMin = rhs.value.min { $0.startAt < $1.startAt }
+                return (lhsMin?.startAt ?? 0) > (rhsMin?.startAt ?? 0)
             }
             .map { (domain: String, operations: [NetworkViewer.Operation]) in
                     .init(
