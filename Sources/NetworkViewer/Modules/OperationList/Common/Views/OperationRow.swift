@@ -22,7 +22,7 @@ struct OperationRow: View {
                     .fixedSize()
                     .foregroundColor(data.success ? .green : .red)
                 Text(data.method)
-                    .bold()
+                    .font(.system(size: 14, weight: .medium))
                 secondaryText(data.status)
                 secondaryText(data.date)
                 if let duration = data.duration {
@@ -30,6 +30,7 @@ struct OperationRow: View {
                 }
             }
             Text("[\(data.url)](\(data.url))")
+                .allowsHitTesting(false)
         }
     }
 
@@ -43,6 +44,7 @@ struct OperationRow: View {
                 .font(.system(size: 14, weight: .light))
                 .lineLimit(1)
                 .foregroundColor(.secondary)
+                .disabled(true)
         }
     }
 }

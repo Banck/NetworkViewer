@@ -21,6 +21,14 @@ struct CustomContentNavigationLink<ContentView: View, Destination: View>: View {
         self.destination = destination
     }
 
+    init(
+        @ViewBuilder destination: @escaping () -> Destination,
+        @ViewBuilder label: @escaping () -> ContentView
+    ) {
+        self.init(contentView: label, destination: destination)
+    }
+
+
     var body: some View {
         ZStack {
             NavigationLink(destination: {

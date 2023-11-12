@@ -27,6 +27,7 @@ struct OperationListScreen: View, OperationListView {
                 OperationRow.init(data: data)
             }
         }
+        .listStyle(.inset)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
