@@ -15,9 +15,10 @@ import SwiftUI
 struct OperationConfigurator {
 
     static func createModule(
+        operation: NetworkViewer.Operation,
         output: OperationModuleOutput? = nil
     ) -> (view: some View, input: OperationModuleInput) {
-        let viewModel = OperationViewModel(output: output)
+        let viewModel = OperationViewModel(operation: operation, output: output)
         let view = OperationScreen(viewModel: viewModel)
 
         return (view, viewModel)

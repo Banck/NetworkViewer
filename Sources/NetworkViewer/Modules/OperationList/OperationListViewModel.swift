@@ -15,13 +15,71 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
 
     private var output: OperationListModuleOutput?
     private let operations: [NetworkViewer.Operation]
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        return formatter
+    }()
+    private var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = NumberFormatter.Style.decimal
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        return formatter
+    }()
+
     var title: String {
         URL(string: operations.first?.request.url ?? "")?.host ?? ""
     }
+    @Published var operationsData: [OperationRow.Data] = []
 
     init(operations: [NetworkViewer.Operation], output: OperationListModuleOutput? = nil) {
         self.operations = operations
         self.output = output
+        prepareOperations()
+    }
+
+    func operation(forId id: String) -> NetworkViewer.Operation? {
+        operations.first { $0.id == id }
+    }
+
+    private func prepareOperations() {
+        operationsData = operations.map {
+            let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? 0)
+            let startDate = Date(timeIntervalSince1970: $0.startAt)
+            var status = "Unknown"
+            if let statusCode {
+                status = "\(statusCode.rawValue) " + statusCode.description
+            }
+            var duration: String?
+            if let endAt = $0.endAt {
+                let endDate = Date(timeIntervalSince1970: endAt)
+                let timeInterval = endDate.timeIntervalSince(startDate)
+                if timeInterval > 60 {
+                    numberFormatter.positiveSuffix = " min"
+                    numberFormatter.maximumFractionDigits = 2
+                    duration = numberFormatter.string(for: timeInterval / 60)
+                }
+                if timeInterval > 1 {
+                    numberFormatter.positiveSuffix = " sec"
+                    numberFormatter.maximumFractionDigits = 2
+                    duration = numberFormatter.string(for: timeInterval)
+                } else {
+                    numberFormatter.maximumFractionDigits = 0
+                    numberFormatter.positiveSuffix = " ms"
+                    duration = numberFormatter.string(for: timeInterval * 1000)
+                }
+            }
+            return OperationRow.Data(
+                id: $0.id,
+                success: (200...299).contains(statusCode?.rawValue ?? 0),
+                method: $0.request.method,
+                status: status,
+                date: dateFormatter.string(from: Date(timeIntervalSince1970: $0.startAt)),
+                duration: duration,
+                url: $0.request.url
+            )
+        }
     }
 }
 

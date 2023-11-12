@@ -29,8 +29,8 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         prepareDomainsData()
     }
 
-    func operations(forId id: String) -> [NetworkViewer.Operation] {
-        operationsByDomain[id] ?? []
+    func operations(forDomain domain: String) -> [NetworkViewer.Operation] {
+        operationsByDomain[domain] ?? []
     }
 }
 

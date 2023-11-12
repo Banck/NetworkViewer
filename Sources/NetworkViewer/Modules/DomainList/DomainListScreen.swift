@@ -40,7 +40,7 @@ struct DomainListScreen: View {
                             SettingsDetailedRow(data: data)
                         },
                         destination: {
-                            OperationListConfigurator.createModule(operations: viewModel.operations(forId: data.id)).view
+                            OperationListConfigurator.createModule(operations: viewModel.operations(forDomain: data.id)).view
                         }
                     )
                     .listRowInsets(.zero)
@@ -57,6 +57,7 @@ struct DomainListScreen: View {
 
 #Preview {
     let googleOperation = NetworkViewer.Operation(
+        id: UUID().uuidString,
         request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
         response: nil,
         error: nil,
@@ -64,13 +65,15 @@ struct DomainListScreen: View {
         endAt: Date().timeIntervalSince1970 + 60
     )
     let appleOperation = NetworkViewer.Operation(
+        id: UUID().uuidString,
         request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
-        response: nil,
+        response: .init(statusCode: 200, headers: [:]),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 30,
         endAt: Date().timeIntervalSince1970 + 30
     )
     let appleSecondOperation = NetworkViewer.Operation(
+        id: UUID().uuidString,
         request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
         response: nil,
         error: nil,
@@ -79,7 +82,7 @@ struct DomainListScreen: View {
     )
 
     let operations: [NetworkViewer.Operation] = [
-        googleOperation, appleOperation, googleOperation, appleSecondOperation, googleOperation
+        googleOperation, appleOperation, appleSecondOperation
     ]
     let module = DomainListConfigurator.createModule(operations: operations)
     return module.view

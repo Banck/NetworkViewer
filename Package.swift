@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "NetworkViewer",
+    defaultLocalization: "en",
     platforms: [.iOS(.v14)],
     products: [
         .library(
@@ -16,7 +17,8 @@ let package = Package(
     targets: [
         .target(
             name: "NetworkViewer",
-            dependencies: []
+            dependencies: [],
+            resources: [.process("Resources")]
         )
     ]
 )

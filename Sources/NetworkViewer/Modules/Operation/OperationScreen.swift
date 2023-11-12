@@ -24,6 +24,14 @@ struct OperationScreen: View, OperationView {
 }
 
 #Preview {
-    let module = OperationConfigurator.createModule()
+    let googleOperation = NetworkViewer.Operation(
+        id: UUID().uuidString,
+        request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
+        response: nil,
+        error: nil,
+        startAt: Date().timeIntervalSince1970,
+        endAt: Date().timeIntervalSince1970 + 60
+    )
+    let module = OperationConfigurator.createModule(operation: googleOperation)
     return module.view
 }

@@ -14,8 +14,10 @@ import Foundation
 class OperationViewModel: OperationViewModelInterface, ObservableObject {
 
     private var output: OperationModuleOutput?
+    private var operation: NetworkViewer.Operation
 
-    init(output:OperationModuleOutput? = nil) {
+    init(operation: NetworkViewer.Operation, output:OperationModuleOutput? = nil) {
+        self.operation = operation
         self.output = output
     }
 }

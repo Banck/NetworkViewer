@@ -1,0 +1,71 @@
+/* 
+  Localizable.strings
+  
+
+  Created by Sakhabaev Egor on 12.11.2023.
+  
+*/
+/// HTTP Status
+"http_status_100" = "Continue";
+"http_status_101" = "Switching Protocols";
+"http_status_102" = "Processing";
+"http_status_200" = "OK";
+"http_status_201" = "Created";
+"http_status_202" = "Accepted";
+"http_status_203" = "Non-authoritative Information";
+"http_status_204" = "No Content";
+"http_status_205" = "Reset Content";
+"http_status_206" = "Partial Content";
+"http_status_207" = "Multi-Status";
+"http_status_208" = "Already Reported";
+"http_status_226" = "IM Used";
+"http_status_300" = "Multiple Choices";
+"http_status_301" = "Moved Permanently";
+"http_status_302" = "Found";
+"http_status_303" = "See Other";
+"http_status_304" = "Not Modified";
+"http_status_305" = "Use Proxy";
+"http_status_307" = "Temporary Redirect";
+"http_status_308" = "Permanent Redirect";
+"http_status_400" = "Bad Request";
+"http_status_401" = "Unauthorized";
+"http_status_402" = "Payment Required";
+"http_status_403" = "Forbidden";
+"http_status_404" = "Not Found";
+"http_status_405" = "Method Not Allowed";
+"http_status_406" = "Not Acceptable";
+"http_status_407" = "Proxy Authentication Required";
+"http_status_408" = "Request Timeout";
+"http_status_409" = "Conflict";
+"http_status_410" = "Gone";
+"http_status_411" = "Length Required";
+"http_status_412" = "Precondition Failed";
+"http_status_413" = "Payload Too Large";
+"http_status_414" = "Request-URI Too Long";
+"http_status_415" = "Unsupported Media Type";
+"http_status_416" = "Requested Range Not Satisfiable";
+"http_status_417" = "Expectation Failed";
+"http_status_418" = "I'm a teapot";
+"http_status_421" = "Misdirected Request";
+"http_status_422" = "Unprocessable Entity";
+"http_status_423" = "Locked";
+"http_status_424" = "Failed Dependency";
+"http_status_426" = "Upgrade Required";
+"http_status_428" = "Precondition Required";
+"http_status_429" = "Too Many Requests";
+"http_status_431" = "Request Header Fields Too Large";
+"http_status_444" = "Connection Closed Without Response";
+"http_status_451" = "Unavailable For Legal Reasons";
+"http_status_499" = "Client Closed Request";
+"http_status_500" = "Internal Server Error";
+"http_status_501" = "Not Implemented";
+"http_status_502" = "Bad Gateway";
+"http_status_503" = "Service Unavailable";
+"http_status_504" = "Gateway Timeout";
+"http_status_505" = "HTTP Version Not Supported";
+"http_status_506" = "Variant Also Negotiates";
+"http_status_507" = "Insufficient Storage";
+"http_status_508" = "Loop Detected";
+"http_status_510" = "Not Extended";
+"http_status_511" = "Network Authentication Required";
+"http_status_599" = "Network Connect Timeout Error";

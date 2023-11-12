@@ -16,9 +16,16 @@ struct OperationListScreen: View, OperationListView {
     @StateObject var viewModel: OperationListViewModel
 
     var body: some View {
-        List {
-            Text(viewModel.title)
-            
+        List(viewModel.operationsData, id: \.id) { data in
+            NavigationLink {
+                if let operation = viewModel.operation(forId: data.id) {
+                    OperationConfigurator.createModule(operation: operation).view
+                } else {
+                    EmptyView()
+                }
+            } label: {
+                OperationRow.init(data: data)
+            }
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -30,20 +37,23 @@ struct OperationListScreen: View, OperationListView {
 
 #Preview {
     let firstOperation = NetworkViewer.Operation(
+        id: "1",
         request: .init(url: "https://google.com/api/ai", method: "POST", headers: [:], body: nil),
-        response: nil,
+        response: .init(statusCode: 200, headers: [:]),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 60,
         endAt: Date().timeIntervalSince1970 - 55
     )
     let secondOperation = NetworkViewer.Operation(
+        id: "2",
         request: .init(url: "https://google.com/api/images", method: "GET", headers: [:], body: nil),
         response: nil,
         error: nil,
         startAt: Date().timeIntervalSince1970 - 50,
-        endAt: Date().timeIntervalSince1970 - 40
+        endAt: Date().timeIntervalSince1970 - 49.612
     )
     let thirdOperation = NetworkViewer.Operation(
+        id: "3",
         request: .init(url: "https://google.com/api/search?text=test", method: "POST", headers: [:], body: nil),
         response: nil,
         error: nil,

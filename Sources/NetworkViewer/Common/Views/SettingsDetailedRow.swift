@@ -9,44 +9,6 @@ import SwiftUI
 
 struct SettingsDetailedRow: View {
 
-    struct Data: RowIdentifible {
-
-        struct Icon {
-            let image: UIImage
-            let color: Color?
-        }
-
-        struct TextData {
-            let text: String
-            let font: Font?
-
-            init(text: String, font: Font? = nil) {
-                self.text = text
-                self.font = font
-            }
-        }
-
-        var id: String
-        let icon: Icon?
-        let title: TextData
-        var detail: TextData?
-        var disclosureIndicator: Bool
-
-        init(
-            id: String? = nil,
-            icon: Icon? = nil,
-            title: TextData,
-            detail: TextData? = nil,
-            disclosureIndicator: Bool = false
-        ) {
-            self.id = id ?? title.text
-            self.icon = icon
-            self.title = title
-            self.detail = detail
-            self.disclosureIndicator = disclosureIndicator
-        }
-    }
-
     private let data: Data
 
     // "proxy" size
@@ -96,6 +58,48 @@ struct SettingsDetailedRow: View {
         )
     }
 }
+
+extension SettingsDetailedRow {
+
+    struct Data: RowIdentifible {
+
+        struct Icon {
+            let image: UIImage
+            let color: Color?
+        }
+
+        struct TextData {
+            let text: String
+            let font: Font?
+
+            init(text: String, font: Font? = nil) {
+                self.text = text
+                self.font = font
+            }
+        }
+
+        var id: String
+        let icon: Icon?
+        let title: TextData
+        var detail: TextData?
+        var disclosureIndicator: Bool
+
+        init(
+            id: String? = nil,
+            icon: Icon? = nil,
+            title: TextData,
+            detail: TextData? = nil,
+            disclosureIndicator: Bool = false
+        ) {
+            self.id = id ?? title.text
+            self.icon = icon
+            self.title = title
+            self.detail = detail
+            self.disclosureIndicator = disclosureIndicator
+        }
+    }
+}
+
 
 #Preview {
     List {
