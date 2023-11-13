@@ -18,6 +18,13 @@ struct BodyViewerScreen: View, BodyViewerView {
     var body: some View {
         TextEditor(text: .constant(viewModel.text))
             .ignoresSafeArea(edges: .bottom)
+            .toolbar {
+                if #available(iOS 16, *) {
+                    ShareLink(items: [viewModel.text]) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+            }
             .onAppear {
                 viewModel.viewWillAppear()
             }
@@ -26,5 +33,7 @@ struct BodyViewerScreen: View, BodyViewerView {
 
 #Preview {
     let module = BodyViewerConfigurator.createModule(data: Data())
-    return module.view
+    return NavigationView {
+        module.view
+    }
 }
