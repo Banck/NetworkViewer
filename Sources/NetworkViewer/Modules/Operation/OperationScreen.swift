@@ -28,6 +28,7 @@ struct OperationScreen: View, OperationView {
         id: UUID().uuidString,
         request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
         response: nil,
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970,
         endAt: Date().timeIntervalSince1970 + 60

@@ -30,6 +30,18 @@ struct OperationListScreen: View, OperationListView {
         .listStyle(.inset)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            Button(
+                action: {
+                    let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                    impactMed.impactOccurred()
+                    viewModel.toggleFavorite()
+                },
+                label: {
+                    Image(systemName: viewModel.isFavorite ? "pin.fill" : "pin")
+                }
+            )
+        }
         .onAppear {
             viewModel.viewWillAppear()
         }
@@ -41,6 +53,7 @@ struct OperationListScreen: View, OperationListView {
         id: "1",
         request: .init(url: "https://google.com/api/ai", method: "POST", headers: [:], body: nil),
         response: .init(statusCode: 200, headers: [:]),
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 60,
         endAt: Date().timeIntervalSince1970 - 55
@@ -49,6 +62,7 @@ struct OperationListScreen: View, OperationListView {
         id: "2",
         request: .init(url: "https://google.com/api/images", method: "GET", headers: [:], body: nil),
         response: nil,
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 50,
         endAt: Date().timeIntervalSince1970 - 49.612
@@ -57,6 +71,7 @@ struct OperationListScreen: View, OperationListView {
         id: "3",
         request: .init(url: "https://google.com/api/search?text=test", method: "POST", headers: [:], body: nil),
         response: nil,
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 30,
         endAt: Date().timeIntervalSince1970
@@ -66,5 +81,7 @@ struct OperationListScreen: View, OperationListView {
         firstOperation, secondOperation, thirdOperation
     ]
     let module = OperationListConfigurator.createModule(operations: operations)
-    return module.view
+    return NavigationView {
+        module.view
+    }
 }

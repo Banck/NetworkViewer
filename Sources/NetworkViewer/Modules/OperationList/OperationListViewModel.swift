@@ -27,14 +27,23 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         formatter.decimalSeparator = "."
         return formatter
     }()
+    private lazy var domain: String = {
+        URL(string: operations.first?.request.url ?? "")?.host ?? ""
+    }()
 
     var title: String {
-        URL(string: operations.first?.request.url ?? "")?.host ?? ""
+        domain
     }
     @Published var operationsData: [OperationRow.Data] = []
+    @Published var isFavorite: Bool = false
 
-    init(operations: [NetworkViewer.Operation], output: OperationListModuleOutput? = nil) {
-        self.operations = operations
+    init(
+        operations: [NetworkViewer.Operation],
+        output: OperationListModuleOutput? = nil
+    ) {
+        self.operations = operations.sorted {
+            $0.startAt > $1.startAt
+        }
         self.output = output
         prepareOperations()
     }
@@ -43,7 +52,21 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         operations.first { $0.id == id }
     }
 
-    private func prepareOperations() {
+    func toggleFavorite() {
+        NetworkViewer.favoriteService.toggleFavorite(for: domain)
+        isFavorite = NetworkViewer.favoriteService.isFavorite(domain)
+    }
+
+    // MARK: - Lifecycle -
+    func viewWillAppear() {
+        isFavorite = NetworkViewer.favoriteService.isFavorite(domain)
+    }
+}
+
+// MARK: - Private methods
+private extension OperationListViewModel {
+
+    func prepareOperations() {
         operationsData = operations.map {
             let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? 0)
             let startDate = Date(timeIntervalSince1970: $0.startAt)

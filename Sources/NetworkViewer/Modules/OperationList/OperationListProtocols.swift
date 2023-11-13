@@ -23,12 +23,13 @@ struct OperationListModuleOutput {
 
 // MARK: - Presenter
 protocol OperationListViewModelInterface: ObservableObject {
-
+    
     var title: String {get }
     var operationsData: [OperationRow.Data] { get }
+    var isFavorite: Bool { get }
 
     func operation(forId id: String) -> NetworkViewer.Operation?
-    
+
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

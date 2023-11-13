@@ -23,14 +23,21 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         domainsData.filter { !$0.isPinned }.map(\.cellData)
     }
 
-    init(operations: [NetworkViewer.Operation], output: DomainListModuleOutput? = nil) {
-        self.output = output
+    init(
+        operations: [NetworkViewer.Operation],
+        output: DomainListModuleOutput? = nil
+    ) {
         self.operations = operations
-        prepareDomainsData()
+        self.output = output
     }
 
     func operations(forDomain domain: String) -> [NetworkViewer.Operation] {
         operationsByDomain[domain] ?? []
+    }
+
+    // MARK: - Lifecycle -
+    func viewWillAppear() {
+        prepareDomainsData()
     }
 }
 
@@ -53,7 +60,7 @@ private extension DomainListViewModel {
                             detail: .init(text: operations.count.description),
                             disclosureIndicator: true
                         ),
-                        isPinned: false
+                        isPinned: NetworkViewer.favoriteService.isFavorite(domain)
                     )
 
             }

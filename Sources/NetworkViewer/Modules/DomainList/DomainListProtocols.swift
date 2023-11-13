@@ -29,7 +29,7 @@ protocol DomainListViewModelInterface: ObservableObject {
     var unpinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
 
     func operations(forDomain domain: String) -> [NetworkViewer.Operation]
-
+    
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

@@ -22,6 +22,9 @@ struct DomainListScreen: View {
                 sectionForDomains(isPinned: false)
             }
             .navigationTitle("Domains")
+            .onAppear {
+                viewModel.viewWillAppear()
+            }
         }
     }
 
@@ -47,7 +50,10 @@ struct DomainListScreen: View {
                 }
             } header: {
                 if isPinned {
-                    Text("isPinned")
+                    HStack {
+                        Image(systemName: "pin.fill")
+                        Text("Pinned")
+                    }
                 }
             } footer: { }
         }
@@ -60,6 +66,7 @@ struct DomainListScreen: View {
         id: UUID().uuidString,
         request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
         response: nil,
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970,
         endAt: Date().timeIntervalSince1970 + 60
@@ -68,6 +75,7 @@ struct DomainListScreen: View {
         id: UUID().uuidString,
         request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
         response: .init(statusCode: 200, headers: [:]),
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970 - 30,
         endAt: Date().timeIntervalSince1970 + 30
@@ -76,6 +84,7 @@ struct DomainListScreen: View {
         id: UUID().uuidString,
         request: .init(url: "https://apple.com", method: "GET", headers: [:], body: nil),
         response: nil,
+        responseData: Data(),
         error: nil,
         startAt: Date().timeIntervalSince1970 + 10,
         endAt: Date().timeIntervalSince1970 + 30

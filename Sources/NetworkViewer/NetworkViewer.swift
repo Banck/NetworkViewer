@@ -12,7 +12,7 @@ public class NetworkViewer {
 
     public private(set) static var operations: [NetworkViewer.Operation] = []
     public static var invokeByShake: Bool = false
-
+    static let favoriteService: FavoriteServiceProtocol = FavoriteService()
     public static func addOperation(_ operation: NetworkViewer.Operation) {
         operations.append(operation)
     }

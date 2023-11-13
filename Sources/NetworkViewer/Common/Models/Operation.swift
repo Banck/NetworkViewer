@@ -14,6 +14,7 @@ public extension NetworkViewer {
         let id: String
         let request: Request
         let response: Response?
+        let responseData: Data
         let error: CustomError?
         let startAt: TimeInterval
         let endAt: TimeInterval?
@@ -22,6 +23,7 @@ public extension NetworkViewer {
             id: String,
             request: Request,
             response: Response?,
+            responseData: Data,
             error: CustomError?,
             startAt: TimeInterval,
             endAt: TimeInterval?
@@ -29,6 +31,7 @@ public extension NetworkViewer {
             self.id = id
             self.request = request
             self.response = response
+            self.responseData = responseData
             self.error = error
             self.startAt = startAt
             self.endAt = endAt
