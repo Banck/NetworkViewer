@@ -1,5 +1,5 @@
 //
-//  JSONViewerScreen.swift
+//  BodyViewerScreen.swift
 //  Olimp
 //
 //  Created Sakhabaev Egor on 10.11.2023.
@@ -11,12 +11,13 @@
 
 import SwiftUI
 
-struct JSONViewerScreen: View, JSONViewerView {
+struct BodyViewerScreen: View, BodyViewerView {
 
-    @StateObject var viewModel: JSONViewerViewModel
+    @StateObject var viewModel: BodyViewerViewModel
 
     var body: some View {
-        Text("Hello")
+        TextEditor(text: .constant(viewModel.text))
+            .ignoresSafeArea(edges: .bottom)
             .onAppear {
                 viewModel.viewWillAppear()
             }
@@ -24,6 +25,6 @@ struct JSONViewerScreen: View, JSONViewerView {
 }
 
 #Preview {
-    let module = JSONViewerConfigurator.createModule()
+    let module = BodyViewerConfigurator.createModule(data: Data())
     return module.view
 }

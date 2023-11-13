@@ -1,6 +1,5 @@
 //
 //  OperationListScreen.swift
-//  Olimp
 //
 //  Created Sakhabaev Egor on 10.11.2023.
 //  Copyright © 2023 ___ORGANIZATIONNAME___. All rights reserved.
@@ -19,7 +18,8 @@ struct OperationListScreen: View, OperationListView {
         List(viewModel.operationsData, id: \.id) { data in
             NavigationLink {
                 if let operation = viewModel.operation(forId: data.id) {
-                    OperationConfigurator.createModule(operation: operation).view
+                    BodyViewerConfigurator.createModule(data: operation.responseData).view
+//                    OperationConfigurator.createModule(operation: operation).view
                 } else {
                     EmptyView()
                 }

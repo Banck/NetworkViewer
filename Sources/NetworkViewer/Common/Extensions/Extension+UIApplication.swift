@@ -1,6 +1,5 @@
 //
 //  public extension + UIWindow.swift
-//  Olimp
 //
 //  Created by Artem Balashov on 12/03/2019.
 //  Copyright © 2019 Egor Sakhabaev. All rights reserved.

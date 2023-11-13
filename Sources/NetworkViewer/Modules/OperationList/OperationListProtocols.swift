@@ -1,6 +1,5 @@
 //
 //  OperationListProtocols.swift
-//  Olimp
 //
 //  Created Sakhabaev Egor on 10.11.2023.
 //  Copyright © 2023 ___ORGANIZATIONNAME___. All rights reserved.

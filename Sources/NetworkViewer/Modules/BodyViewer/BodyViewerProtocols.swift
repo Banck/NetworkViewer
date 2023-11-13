@@ -1,6 +1,5 @@
 //
-//  JSONViewerProtocols.swift
-//  Olimp
+//  BodyViewerProtocols.swift
 //
 //  Created Sakhabaev Egor on 10.11.2023.
 //  Copyright © 2023 ___ORGANIZATIONNAME___. All rights reserved.
@@ -12,17 +11,19 @@
 import Foundation
 import SwiftUI
 
-// MARK: - JSONViewerModuleInput
-protocol JSONViewerModuleInput: AnyObject { }
+// MARK: - BodyViewerModuleInput
+protocol BodyViewerModuleInput: AnyObject { }
 
-// MARK: - JSONViewerModuleOutput
-struct JSONViewerModuleOutput {
+// MARK: - BodyViewerModuleOutput
+struct BodyViewerModuleOutput {
     
 //    let didSelectSearchResult: (_ searchResult: String) -> Void
 }
 
 // MARK: - Presenter
-protocol JSONViewerViewModelInterface: ObservableObject {
+protocol BodyViewerViewModelInterface: ObservableObject {
+
+    var text: String { get }
 
     // MARK: - Lifecycle
     func viewDidLoad()
@@ -30,7 +31,7 @@ protocol JSONViewerViewModelInterface: ObservableObject {
     func viewWillDisappear()
 }
 
-extension JSONViewerViewModelInterface {
+extension BodyViewerViewModelInterface {
 
     func viewDidLoad() {/*leaves this empty*/}
     func viewWillAppear() {/*leaves this empty*/}
@@ -38,6 +39,6 @@ extension JSONViewerViewModelInterface {
 }
 
 // MARK: - View
-protocol JSONViewerView {
+protocol BodyViewerView {
 
 }

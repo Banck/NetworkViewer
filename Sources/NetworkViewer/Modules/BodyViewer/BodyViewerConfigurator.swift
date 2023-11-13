@@ -1,6 +1,5 @@
 //
-//  JSONViewerConfigurator.swift
-//  Olimp
+//  BodyViewerConfigurator.swift
 //
 //  Created Sakhabaev Egor on 10.11.2023.
 //  Copyright © 2023 ___ORGANIZATIONNAME___. All rights reserved.
@@ -12,13 +11,14 @@
 import UIKit
 import SwiftUI
 
-struct JSONViewerConfigurator {
+struct BodyViewerConfigurator {
 
     static func createModule(
-        output: JSONViewerModuleOutput? = nil
-    ) -> (view: some View, input: JSONViewerModuleInput) {
-        let viewModel = JSONViewerViewModel(output: output)
-        let view = JSONViewerScreen(viewModel: viewModel)
+        data: Data,
+        output: BodyViewerModuleOutput? = nil
+    ) -> (view: some View, input: BodyViewerModuleInput) {
+        let viewModel = BodyViewerViewModel(data: data, output: output)
+        let view = BodyViewerScreen(viewModel: viewModel)
 
         return (view, viewModel)
     }
