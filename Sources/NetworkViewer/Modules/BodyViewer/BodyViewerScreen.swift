@@ -1,6 +1,5 @@
 //
 //  BodyViewerScreen.swift
-//  Olimp
 //
 //  Created Sakhabaev Egor on 10.11.2023.
 //  Copyright © 2023 ___ORGANIZATIONNAME___. All rights reserved.
@@ -13,28 +12,64 @@ import SwiftUI
 
 struct BodyViewerScreen: View, BodyViewerView {
 
+    enum TextDisplayStyle: String, CaseIterable, Identifiable {
+
+        var id: Self {
+            self
+        }
+
+        case json   = "JSON"
+        case raw    = "RAW"
+    }
+
     @StateObject var viewModel: BodyViewerViewModel
+    @State private var textDisplayStyle: TextDisplayStyle = .json
     @State private var isShowingFindNavigator = false
 
     var body: some View {
-        TextEditor(text: .constant(viewModel.text))
-            .ignoresSafeArea(.container, edges: .bottom)
-            .onAppear {
-                viewModel.viewWillAppear()
-            }
-            .viFindNavigator(isPresented: $isShowingFindNavigator)
-            .toolbar {
-                if #available(iOS 16.0, *) {
-                    Button {
-                        isShowingFindNavigator.toggle()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                    ShareLink(items: [viewModel.text]) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
+        VStack {
+            Picker("", selection: $textDisplayStyle) {
+                ForEach(TextDisplayStyle.allCases) {
+                    Text($0.rawValue)
                 }
             }
+            .pickerStyle(.segmented)
+            contentForStyle(textDisplayStyle)
+                .padding(4)
+        }
+        .toolbar {
+            if #available(iOS 16.0, *) {
+                Button {
+                    textDisplayStyle = .raw
+                    // Hack to avoid bug with FindNavigator when TextEditor not always visibles
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        textDisplayStyle = .json
+                        textDisplayStyle = .raw
+                        isShowingFindNavigator.toggle()
+                    }
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+                ShareLink(items: [viewModel.text]) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+        }
+        .onAppear {
+            viewModel.viewWillAppear()
+        }
+        .viFindNavigator(isPresented: $isShowingFindNavigator)
+    }
+
+    @ViewBuilder
+    func contentForStyle(_ style: TextDisplayStyle) -> some View {
+        switch style {
+        case .json:
+            DebugJsonView(viewModel.text)
+        case .raw:
+            TextEditor(text: .constant(viewModel.text))
+                .ignoresSafeArea(.container, edges: .bottom)
+        }
     }
 }
 
