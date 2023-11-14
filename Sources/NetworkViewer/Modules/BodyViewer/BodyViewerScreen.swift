@@ -17,26 +17,24 @@ struct BodyViewerScreen: View, BodyViewerView {
     @State private var isShowingFindNavigator = false
 
     var body: some View {
-        Group {
-            TextEditor(text: .constant(viewModel.text))
-                .ignoresSafeArea(edges: .bottom)
-                .onAppear {
-                    viewModel.viewWillAppear()
-                }
-                .viFindNavigator(isPresented: $isShowingFindNavigator)
-                .toolbar {
-                    if #available(iOS 16.0, *) {
-                        Button {
-                            isShowingFindNavigator.toggle()
-                        } label: {
-                            Image(systemName: "magnifyingglass")
-                        }
-                        ShareLink(items: [viewModel.text]) {
-                            Image(systemName: "square.and.arrow.up")
-                        }
+        TextEditor(text: .constant(viewModel.text))
+            .ignoresSafeArea(.container, edges: .bottom)
+            .onAppear {
+                viewModel.viewWillAppear()
+            }
+            .viFindNavigator(isPresented: $isShowingFindNavigator)
+            .toolbar {
+                if #available(iOS 16.0, *) {
+                    Button {
+                        isShowingFindNavigator.toggle()
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    ShareLink(items: [viewModel.text]) {
+                        Image(systemName: "square.and.arrow.up")
                     }
                 }
-        }
+            }
     }
 }
 
