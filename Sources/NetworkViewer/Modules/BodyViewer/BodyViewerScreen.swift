@@ -14,25 +14,59 @@ import SwiftUI
 struct BodyViewerScreen: View, BodyViewerView {
 
     @StateObject var viewModel: BodyViewerViewModel
+    @State private var isShowingFindNavigator = false
 
     var body: some View {
-        TextEditor(text: .constant(viewModel.text))
-            .ignoresSafeArea(edges: .bottom)
-            .toolbar {
-                if #available(iOS 16, *) {
-                    ShareLink(items: [viewModel.text]) {
-                        Image(systemName: "square.and.arrow.up")
+        Group {
+            TextEditor(text: .constant(viewModel.text))
+                .ignoresSafeArea(edges: .bottom)
+                .onAppear {
+                    viewModel.viewWillAppear()
+                }
+                .viFindNavigator(isPresented: $isShowingFindNavigator)
+                .toolbar {
+                    if #available(iOS 16.0, *) {
+                        Button {
+                            isShowingFindNavigator.toggle()
+                        } label: {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        ShareLink(items: [viewModel.text]) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
                     }
                 }
-            }
-            .onAppear {
-                viewModel.viewWillAppear()
-            }
+        }
     }
 }
 
 #Preview {
-    let module = BodyViewerConfigurator.createModule(data: Data())
+    let jsonData = """
+{
+    "glossary": {
+        "title": "example glossary",
+        "GlossDiv": {
+            "title": "S",
+            "GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+                    "SortAs": "SGML",
+                    "GlossTerm": "Standard Generalized Markup Language",
+                    "Acronym": "SGML",
+                    "Abbrev": "ISO 8879:1986",
+                    "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                        "GlossSeeAlso": ["GML", "XML"]
+                    },
+                    "GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
+"""
+        .data(using: .utf8)
+    let module = BodyViewerConfigurator.createModule(data: jsonData ?? .init())
     return NavigationView {
         module.view
     }
