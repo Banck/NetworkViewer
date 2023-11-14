@@ -35,8 +35,8 @@ struct BodyViewerScreen: View, BodyViewerView {
             }
             .pickerStyle(.segmented)
             contentForStyle(textDisplayStyle)
-                .padding(4)
         }
+        .padding([.leading, .trailing], 16)
         .toolbar {
             if #available(iOS 16.0, *) {
                 Button {
@@ -68,6 +68,7 @@ struct BodyViewerScreen: View, BodyViewerView {
             DebugJsonView(viewModel.text)
         case .raw:
             TextEditor(text: .constant(viewModel.text))
+                .font(.system(size: 13))
                 .ignoresSafeArea(.container, edges: .bottom)
         }
     }
