@@ -12,6 +12,7 @@ import SwiftUI
 
 struct OperationListScreen: View, OperationListView {
 
+    @Environment(\.presentationMode) var presentation
     @StateObject var viewModel: OperationListViewModel
 
     var body: some View {
@@ -31,6 +32,12 @@ struct OperationListScreen: View, OperationListView {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            Button {
+                viewModel.deleteDomainOperations()
+                presentation.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "trash")
+            }
             Button(
                 action: {
                     let impactMed = UIImpactFeedbackGenerator(style: .medium)
@@ -41,6 +48,9 @@ struct OperationListScreen: View, OperationListView {
                     Image(systemName: viewModel.isFavorite ? "pin.fill" : "pin")
                 }
             )
+        }
+        .onLoad {
+            viewModel.viewDidLoad()
         }
         .onAppear {
             viewModel.viewWillAppear()

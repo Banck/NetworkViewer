@@ -68,7 +68,7 @@ struct BodyViewerScreen: View, BodyViewerView {
             DebugJsonView(viewModel.text)
         case .raw:
             TextEditor(text: .constant(viewModel.text))
-                .font(.system(size: 13))
+                .font(Font(UIFont.monospacedSystemFont(ofSize: 13, weight: .medium)))
                 .ignoresSafeArea(.container, edges: .bottom)
         }
     }

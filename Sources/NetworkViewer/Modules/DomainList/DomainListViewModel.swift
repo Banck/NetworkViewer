@@ -6,11 +6,16 @@
 //
 
 import Foundation
+import SwiftUI
 
 class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     
     private var output: DomainListModuleOutput?
-    private let operations: [NetworkViewer.Operation]
+    private var operations: [NetworkViewer.Operation] {
+        didSet {
+            prepareDomainsData()
+        }
+    }
     private var operationsByDomain: [String: [NetworkViewer.Operation]] {
         Dictionary(grouping: operations) { URL(string: $0.request.url)?.host ?? $0.request.url }
     }
@@ -35,6 +40,11 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         operationsByDomain[domain] ?? []
     }
 
+    func deleteAllOperations() {
+        NetworkViewer.deleteAllOperations()
+        operations.removeAll()
+    }
+
     // MARK: - Lifecycle -
     func viewWillAppear() {
         prepareDomainsData()
@@ -45,6 +55,7 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
 private extension DomainListViewModel {
 
     func prepareDomainsData() {
+
         domainsData = operationsByDomain
             .sorted { lhs, rhs in
                 let lhsMin = lhs.value.min { $0.startAt < $1.startAt }
@@ -62,10 +73,16 @@ private extension DomainListViewModel {
                         ),
                         isPinned: NetworkViewer.favoriteService.isFavorite(domain)
                     )
-
             }
     }
 }
 
 // MARK: - DomainListModuleInput
-extension DomainListViewModel: DomainListModuleInput { }
+extension DomainListViewModel: DomainListModuleInput {
+    
+    func updateOperations(_ operations: [NetworkViewer.Operation]) {
+        withAnimation {
+            self.operations = operations
+        }
+    }
+}

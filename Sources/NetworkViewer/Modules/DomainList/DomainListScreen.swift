@@ -15,12 +15,19 @@ struct DomainListScreen: View {
     @StateObject var viewModel: DomainListViewModel
 
     var body: some View {
-        NavigationView {
+        viNavigationStack {
             List() {
                 sectionForDomains(isPinned: true)
                 sectionForDomains(isPinned: false)
             }
             .navigationTitle("Domains")
+            .toolbar {
+                Button {
+                    viewModel.deleteAllOperations()
+                } label: {
+                    Image(systemName: "trash")
+                }
+            }
             .onAppear {
                 viewModel.viewWillAppear()
             }

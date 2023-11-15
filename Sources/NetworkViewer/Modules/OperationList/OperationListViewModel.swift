@@ -44,7 +44,6 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
             $0.startAt > $1.startAt
         }
         self.output = output
-        prepareOperations()
     }
 
     func operation(forId id: String) -> NetworkViewer.Operation? {
@@ -56,7 +55,15 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         isFavorite = NetworkViewer.favoriteService.isFavorite(domain)
     }
 
+    func deleteDomainOperations() {
+        NetworkViewer.deleteAllOperations(forDomain: domain)
+    }
+
     // MARK: - Lifecycle -
+    func viewDidLoad() {
+        prepareOperations()
+    }
+    
     func viewWillAppear() {
         isFavorite = NetworkViewer.favoriteService.isFavorite(domain)
     }

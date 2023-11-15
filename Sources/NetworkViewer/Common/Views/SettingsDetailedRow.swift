@@ -12,7 +12,7 @@ struct SettingsDetailedRow: View {
     private let data: Data
 
     // "proxy" size
-    @State private var contentSize: CGSize = .zero
+    @State private var contentSize: CGSize?
 
     init(data: Data) {
         self.data = data
@@ -28,7 +28,7 @@ struct SettingsDetailedRow: View {
             Text(data.title.text)
                 .font(data.title.font ?? .system(size: 17, weight: .medium))
                 .frame(
-                    maxWidth: contentSize.width,
+                    maxWidth: contentSize?.width,
                     alignment: .leading
                 )
             Spacer()

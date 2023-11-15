@@ -30,11 +30,11 @@ struct CustomContentNavigationLink<ContentView: View, Destination: View>: View {
 
     var body: some View {
         ZStack {
-            NavigationLink(destination: {
+            NavigationLink {
                 destination()
-            }, label: {
+            } label: {
                 EmptyView()
-            })
+            }
             .opacity(0)
             contentView()
         }

@@ -28,7 +28,8 @@ protocol OperationListViewModelInterface: ObservableObject {
     var isFavorite: Bool { get }
 
     func operation(forId id: String) -> NetworkViewer.Operation?
-
+    func deleteDomainOperations()
+    
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

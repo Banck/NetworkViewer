@@ -12,7 +12,10 @@ import Foundation
 import SwiftUI
 
 // MARK: - DomainListModuleInput
-protocol DomainListModuleInput: AnyObject { }
+protocol DomainListModuleInput: AnyObject {
+
+    func updateOperations(_ operations: [NetworkViewer.Operation])
+}
 
 // MARK: - DomainListModuleOutput
 struct DomainListModuleOutput {
@@ -28,6 +31,7 @@ protocol DomainListViewModelInterface: ObservableObject {
     var unpinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
 
     func operations(forDomain domain: String) -> [NetworkViewer.Operation]
+    func deleteAllOperations()
     
     // MARK: - Lifecycle
     func viewDidLoad()
