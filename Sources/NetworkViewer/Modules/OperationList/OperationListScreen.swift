@@ -31,6 +31,10 @@ struct OperationListScreen: View, OperationListView {
         .listStyle(.inset)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
+        .viSearchable(text: $viewModel.searchText)
+        .onChange(of: $viewModel.searchText.wrappedValue) { _ in
+            viewModel.didChangeSearchText()
+        }
         .toolbar {
             Button {
                 viewModel.deleteDomainOperations()

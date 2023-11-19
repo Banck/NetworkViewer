@@ -13,14 +13,22 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     private var output: DomainListModuleOutput?
     private var operations: [NetworkViewer.Operation] {
         didSet {
+            applyFilters()
+        }
+    }
+    private var filteredOperations: [NetworkViewer.Operation] {
+        didSet {
             prepareDomainsData()
         }
     }
+
     private var operationsByDomain: [String: [NetworkViewer.Operation]] {
-        Dictionary(grouping: operations) { URL(string: $0.request.url)?.host ?? $0.request.url }
+        Dictionary(grouping: filteredOperations) { URL(string: $0.request.url)?.host ?? $0.request.url }
     }
-    
+
     @Published var domainsData: [DomainData] = []
+    @Published var searchText: String = ""
+
     var pinnedDomainCellsData: [SettingsDetailedRow.Data] {
         domainsData.filter(\.isPinned).map(\.cellData)
     }
@@ -33,6 +41,7 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         output: DomainListModuleOutput? = nil
     ) {
         self.operations = operations
+        self.filteredOperations = operations
         self.output = output
     }
 
@@ -45,6 +54,11 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         operations.removeAll()
     }
 
+    func didChangeSearchText() {
+        print("hello")
+        applyFilters()
+    }
+
     // MARK: - Lifecycle -
     func viewWillAppear() {
         prepareDomainsData()
@@ -55,7 +69,6 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
 private extension DomainListViewModel {
 
     func prepareDomainsData() {
-
         domainsData = operationsByDomain
             .sorted { lhs, rhs in
                 let lhsMin = lhs.value.min { $0.startAt < $1.startAt }
@@ -74,6 +87,18 @@ private extension DomainListViewModel {
                         isPinned: NetworkViewer.favoriteService.isFavorite(domain)
                     )
             }
+    }
+
+    func applyFilters() {
+        withAnimation {
+            if searchText.isEmpty {
+                filteredOperations = operations
+            } else {
+                filteredOperations = operations.filter {
+                    $0.request.url.lowercased().contains(searchText.lowercased())
+                }
+            }
+        }
     }
 }
 

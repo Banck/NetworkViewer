@@ -8,7 +8,7 @@
 //  https://github.com/Banck/SwiftUI-MVVM-Coordinator-template
 //
 
-import Foundation
+import SwiftUI
 
 class OperationListViewModel: OperationListViewModelInterface, ObservableObject {
 
@@ -35,6 +35,7 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
     }
     @Published var operationsData: [OperationRow.Data] = []
     @Published var isFavorite: Bool = false
+    @Published var searchText: String = ""
 
     init(
         operations: [NetworkViewer.Operation],
@@ -59,6 +60,10 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         NetworkViewer.deleteAllOperations(forDomain: domain)
     }
 
+    func didChangeSearchText() {
+        applyFilters()
+    }
+
     // MARK: - Lifecycle -
     func viewDidLoad() {
         prepareOperations()
@@ -73,41 +78,54 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
 private extension OperationListViewModel {
 
     func prepareOperations() {
-        operationsData = operations.map {
-            let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? 0)
-            let startDate = Date(timeIntervalSince1970: $0.startAt)
-            var status = "Unknown"
-            if let statusCode {
-                status = "\(statusCode.rawValue) " + statusCode.description
+        operationsData = operations
+            .filter {
+                searchText.isEmpty
+                || $0.request.url.lowercased().contains(searchText.lowercased())
+                || $0.response?.statusCode.description == searchText
+                || $0.request.method.lowercased() == searchText.lowercased()
             }
-            var duration: String?
-            if let endAt = $0.endAt {
-                let endDate = Date(timeIntervalSince1970: endAt)
-                let timeInterval = endDate.timeIntervalSince(startDate)
-                if timeInterval > 60 {
-                    numberFormatter.positiveSuffix = " min"
-                    numberFormatter.maximumFractionDigits = 2
-                    duration = numberFormatter.string(for: timeInterval / 60)
+            .map {
+                let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? 0)
+                let startDate = Date(timeIntervalSince1970: $0.startAt)
+                var status = "Unknown"
+                if let statusCode {
+                    status = "\(statusCode.rawValue) " + statusCode.description
                 }
-                if timeInterval > 1 {
-                    numberFormatter.positiveSuffix = " sec"
-                    numberFormatter.maximumFractionDigits = 2
-                    duration = numberFormatter.string(for: timeInterval)
-                } else {
-                    numberFormatter.maximumFractionDigits = 0
-                    numberFormatter.positiveSuffix = " ms"
-                    duration = numberFormatter.string(for: timeInterval * 1000)
+                var duration: String?
+                if let endAt = $0.endAt {
+                    let endDate = Date(timeIntervalSince1970: endAt)
+                    let timeInterval = endDate.timeIntervalSince(startDate)
+                    if timeInterval > 60 {
+                        numberFormatter.positiveSuffix = " min"
+                        numberFormatter.maximumFractionDigits = 2
+                        duration = numberFormatter.string(for: timeInterval / 60)
+                    }
+                    if timeInterval > 1 {
+                        numberFormatter.positiveSuffix = " sec"
+                        numberFormatter.maximumFractionDigits = 2
+                        duration = numberFormatter.string(for: timeInterval)
+                    } else {
+                        numberFormatter.maximumFractionDigits = 0
+                        numberFormatter.positiveSuffix = " ms"
+                        duration = numberFormatter.string(for: timeInterval * 1000)
+                    }
                 }
+                return OperationRow.Data(
+                    id: $0.id,
+                    success: (200...299).contains(statusCode?.rawValue ?? 0),
+                    method: $0.request.method,
+                    status: status,
+                    date: dateFormatter.string(from: Date(timeIntervalSince1970: $0.startAt)),
+                    duration: duration,
+                    url: $0.request.url
+                )
             }
-            return OperationRow.Data(
-                id: $0.id,
-                success: (200...299).contains(statusCode?.rawValue ?? 0),
-                method: $0.request.method,
-                status: status,
-                date: dateFormatter.string(from: Date(timeIntervalSince1970: $0.startAt)),
-                duration: duration,
-                url: $0.request.url
-            )
+    }
+
+    func applyFilters() {
+        withAnimation {
+            prepareOperations()
         }
     }
 }

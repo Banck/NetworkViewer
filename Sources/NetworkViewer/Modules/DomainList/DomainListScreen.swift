@@ -21,6 +21,10 @@ struct DomainListScreen: View {
                 sectionForDomains(isPinned: false)
             }
             .navigationTitle("Domains")
+            .viSearchable(text: $viewModel.searchText)
+            .onChange(of: viewModel.searchText) { _ in
+                viewModel.didChangeSearchText()
+            }
             .toolbar {
                 Button {
                     viewModel.deleteAllOperations()
