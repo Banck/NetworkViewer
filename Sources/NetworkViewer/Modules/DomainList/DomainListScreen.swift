@@ -19,12 +19,7 @@ struct DomainListScreen: View {
             List() {
                 sectionForDomains(isPinned: true)
                 sectionForDomains(isPinned: false)
-            }
-            .navigationTitle("Domains")
-            .viSearchable(text: $viewModel.searchText)
-            .onChange(of: viewModel.searchText) { _ in
-                viewModel.didChangeSearchText()
-            }
+            }      
             .toolbar {
                 Button {
                     viewModel.deleteAllOperations()
@@ -32,6 +27,31 @@ struct DomainListScreen: View {
                     Image(systemName: "trash")
                 }
             }
+            .emptyState(
+                isEnabled: viewModel.domainsData.isEmpty && !viewModel.searchText.isEmpty,
+                placeholder: {
+                    PlaceholderView(
+                        "No search",
+                        systemImage: "magnifyingglass",
+                        description: "Check the spelling or try the new search."
+                    )
+                }
+            )
+            .viSearchable(text: $viewModel.searchText)
+            .emptyState(
+                isEnabled: viewModel.domainsData.isEmpty && viewModel.searchText.isEmpty,
+                placeholder: {
+                    PlaceholderView(
+                        "No operations",
+                        systemImage: "folder",
+                        description: "New operations you receive will appear here."
+                    )
+                }
+            )
+            .onChange(of: viewModel.searchText) { _ in
+                viewModel.didChangeSearchText()
+            }
+            .navigationTitle("Domains")
             .onAppear {
                 viewModel.viewWillAppear()
             }
@@ -69,7 +89,6 @@ struct DomainListScreen: View {
         }
     }
 }
-
 
 #Preview {
     let googleOperation = NetworkViewer.Operation(

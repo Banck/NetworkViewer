@@ -31,6 +31,16 @@ struct OperationListScreen: View, OperationListView {
         .listStyle(.inset)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
+        .emptyState(
+            isEnabled: viewModel.operationsData.isEmpty && !viewModel.searchText.isEmpty,
+            placeholder: {
+                PlaceholderView(
+                    "No search",
+                    systemImage: "magnifyingglass",
+                    description: "Check the spelling or try the new search."
+                )
+            }
+        )
         .viSearchable(text: $viewModel.searchText)
         .onChange(of: $viewModel.searchText.wrappedValue) { _ in
             viewModel.didChangeSearchText()
