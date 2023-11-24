@@ -49,6 +49,8 @@ extension UIWindow {
 
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         guard NetworkViewer.invokeByShake,  motion == .motionShake else { return }
+        let topController = UIApplication.topViewController()
+        guard topController?.classForCoder.description().contains("NetworkViewer") == false else { return }
         NetworkViewer.show()
     }
 }
