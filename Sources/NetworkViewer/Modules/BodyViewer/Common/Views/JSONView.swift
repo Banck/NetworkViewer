@@ -26,7 +26,7 @@ private struct JsonView: View {
     let depth: Int
 
     @ViewBuilder var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        LazyVStack(alignment: .leading, spacing: 0) {
             if case .string(let string) = element {
                 StringJsonView(string: string)
                     .jsonKey(key)
