@@ -13,8 +13,10 @@ struct DebugJsonView: View {
 
     var body: some View {
         ScrollView {
-            JsonView(key: nil, element: json, depth: 0)
-                .font(Font(UIFont.monospacedSystemFont(ofSize: 13, weight: .medium)))
+            LazyVStack(alignment: .leading, spacing: 0) {
+                JsonView(key: nil, element: json, depth: 0)
+                    .font(Font(UIFont.monospacedSystemFont(ofSize: 13, weight: .medium)))
+            }
         }
     }
 }
@@ -26,43 +28,41 @@ private struct JsonView: View {
     let depth: Int
 
     @ViewBuilder var body: some View {
-        LazyVStack(alignment: .leading, spacing: 0) {
-            if case .string(let string) = element {
-                StringJsonView(string: string)
-                    .jsonKey(key)
-            }
-            if case .int(let int) = element {
-                Text(int.description)
-                    .foregroundColor(.init(UIColor.systemOrange))
-                    .jsonKey(key)
-            }
-            if case .num(let num) = element {
-                Text(num.description)
-                    .foregroundColor(.init(UIColor.systemOrange))
-                    .jsonKey(key)
-            }
-            if case .flag(let flag) = element {
-                Text("\(flag ? "true" : "false")")
-                    .foregroundColor(.init(UIColor.systemBlue))
-                    .jsonKey(key)
-            }
-            if case .null = element {
-                Text("null")
-                    .foregroundColor(.init(UIColor.systemBlue))
-                    .jsonKey(key)
-            }
-            if case .error(let body) = element {
-                Text("Error!")
-                    .foregroundColor(.init(UIColor.systemRed))
-                Text(body)
-                    .foregroundColor(.init(UIColor.systemGray))
-            }
-            if case .nested(let obj) = element {
-                ObjectJsonView(key: key, obj: obj, depth: depth + 1, isOpen: depth <= 1)
-            }
-            if case .list(let list) = element {
-                ListJsonView(key: key, list: list, depth: depth + 1, isOpen: depth <= 1)
-            }
+        if case .string(let string) = element {
+            StringJsonView(string: string)
+                .jsonKey(key)
+        }
+        if case .int(let int) = element {
+            Text(int.description)
+                .foregroundColor(.init(UIColor.systemOrange))
+                .jsonKey(key)
+        }
+        if case .num(let num) = element {
+            Text(num.description)
+                .foregroundColor(.init(UIColor.systemOrange))
+                .jsonKey(key)
+        }
+        if case .flag(let flag) = element {
+            Text("\(flag ? "true" : "false")")
+                .foregroundColor(.init(UIColor.systemBlue))
+                .jsonKey(key)
+        }
+        if case .null = element {
+            Text("null")
+                .foregroundColor(.init(UIColor.systemBlue))
+                .jsonKey(key)
+        }
+        if case .error(let body) = element {
+            Text("Error!")
+                .foregroundColor(.init(UIColor.systemRed))
+            Text(body)
+                .foregroundColor(.init(UIColor.systemGray))
+        }
+        if case .nested(let obj) = element {
+            ObjectJsonView(key: key, obj: obj, depth: depth + 1, isOpen: depth <= 1)
+        }
+        if case .list(let list) = element {
+            ListJsonView(key: key, list: list, depth: depth + 1, isOpen: depth <= 1)
         }
     }
 }
