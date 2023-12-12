@@ -55,8 +55,11 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     }
 
     func didChangeSearchText() {
-        print("hello")
         applyFilters()
+    }
+
+    func didSelectCopyURL(forId id: String) {
+        UIPasteboard.general.string = id
     }
 
     // MARK: - Lifecycle -

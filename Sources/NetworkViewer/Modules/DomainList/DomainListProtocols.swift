@@ -35,6 +35,7 @@ protocol DomainListViewModelInterface: ObservableObject {
     func deleteAllOperations()
     
     func didChangeSearchText()
+    func didSelectCopyURL(forId id: String)
     
     // MARK: - Lifecycle
     func viewDidLoad()

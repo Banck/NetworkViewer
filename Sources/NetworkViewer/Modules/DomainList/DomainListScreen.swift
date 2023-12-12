@@ -71,6 +71,13 @@ struct DomainListScreen: View {
                     CustomContentNavigationLink(
                         contentView: {
                             SettingsDetailedRow(data: data)
+                                .contextMenu {
+                                    Button {
+                                        viewModel.didSelectCopyURL(forId: data.id)
+                                    } label: {
+                                        Label("Copy domain", systemImage: "doc.on.doc")
+                                    }
+                                }
                         },
                         destination: {
                             OperationListConfigurator.createModule(operations: viewModel.operations(forDomain: data.id)).view
