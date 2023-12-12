@@ -30,7 +30,8 @@ protocol OperationListViewModelInterface: ObservableObject {
     func operation(forId id: String) -> NetworkViewer.Operation?
     func deleteDomainOperations()
     func didChangeSearchText()
-
+    func didSelectCopyURL(forId id: String)
+    
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

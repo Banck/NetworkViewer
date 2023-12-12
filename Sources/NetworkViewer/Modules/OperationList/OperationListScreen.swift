@@ -26,6 +26,13 @@ struct OperationListScreen: View, OperationListView {
                 }
             } label: {
                 OperationRow(data: data)
+                    .contextMenu {
+                        Button {
+                            viewModel.didSelectCopyURL(forId: data.id)
+                        } label: {
+                            Label("Copy URL", systemImage: "doc.on.doc")
+                        }
+                    }
             }
         }
         .listStyle(.inset)

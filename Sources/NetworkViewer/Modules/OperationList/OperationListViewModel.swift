@@ -64,6 +64,11 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         applyFilters()
     }
 
+    func didSelectCopyURL(forId id: String) {
+        guard let operation = operations.first(where: { $0.id == id }) else { return }
+        UIPasteboard.general.string = operation.request.url
+    }
+
     // MARK: - Lifecycle -
     func viewDidLoad() {
         prepareOperations()
