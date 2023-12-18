@@ -31,3 +31,34 @@ public extension NetworkViewer {
         }
     }
 }
+
+public extension NetworkViewer.Request {
+
+    var cURL: String {
+#if swift(>=5.0)
+        var baseCommand = #"curl "\#(url)""#
+#else
+        var baseCommand = "curl \"\(url)\""
+#endif
+
+        if method == "HEAD" {
+            baseCommand += " --head"
+        }
+
+        var command = [baseCommand]
+
+        if method != "GET" && method != "HEAD" {
+            command.append("-X \(method)")
+        }
+
+        for (key, value) in headers where key != "Cookie" {
+            command.append("-H '\(key): \(value)'")
+        }
+
+        if let data = body, let body = String(data: data, encoding: .utf8) {
+            command.append("-d '\(body)'")
+        }
+
+        return command.joined(separator: " \\\n\t")
+    }
+}

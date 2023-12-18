@@ -15,23 +15,181 @@ struct OperationScreen: View, OperationView {
     @StateObject var viewModel: OperationViewModel
 
     var body: some View {
-        Text("Hello")
-            .onAppear {
-                viewModel.viewWillAppear()
+        VStack {
+            if let data = viewModel.data {
+                List() {
+                    contentForMain(data)
+                    contentForSections(data.sectionsData)
+                }
+                .listStyle(.insetGrouped)
+            } else {
+                EmptyView()
             }
+        }
+        .toolbar {
+            Menu {
+                viShareButton(
+                    contentView: {
+                        Label("cURL", systemImage: "doc.badge.arrow.up")
+                    },
+                    data: viewModel.cURL
+                )
+                .foregroundColor(.blue)
+                viShareButton(
+                    contentView: {
+                        Label("All", systemImage: "doc.on.doc")
+                    },
+                    data: viewModel.shareData
+                )
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+            }
+        }
+        .navigationTitle(viewModel.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onLoad {
+            viewModel.viewDidLoad()
+        }
+        .onAppear {
+            viewModel.viewWillAppear()
+        }
+    }
+
+    @ViewBuilder
+    func contentForMain(_ data: OperationData) -> some View {
+        VStack(alignment: .leading, spacing: 8.0) {
+            HStack(spacing: 12.0) {
+                HStack(spacing: 2.0) {
+                    Image(systemName: data.success ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .font(.system(size: 11.0, weight: .regular))
+                    Text(data.status)
+                        .font(.system(size: 11.0, weight: .semibold))
+                }
+                .foregroundColor(data.success ? .green : .red)
+                Text(data.method)
+                    .font(.system(size: 11.0, weight: .bold))
+                    .foregroundColor(.primary)
+                HStack(spacing: 12.0) {
+                    HStack(spacing: 2.0) {
+                        Image(systemName: "clock")
+                            .font(.system(size: 11.0, weight: .regular))
+                        if let duration = data.duration {
+                            Text(duration)
+                                .font(.system(size: 11.0, weight: .semibold))
+                        }
+                    }
+                    .foregroundColor(.secondary)
+                    HStack(spacing: 2.0) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 11.0, weight: .regular))
+                        Text(data.startTime)
+                            .font(.system(size: 11.0, weight: .semibold))
+                    }
+                    .foregroundColor(.secondary)
+                }
+            }
+            Text(data.url)
+                .foregroundColor(.blue)
+        }
+        .standardListPadding()
+    }
+
+    @ViewBuilder
+    func contentForSections(_ sectionsData: [OperationData.SectionData]) -> some View {
+        if sectionsData.isEmpty {
+            EmptyView()
+        } else {
+            ForEach(sectionsData, id: \.id) { sectionData in
+                Section {
+                    ForEach(sectionData.cellData, id: \.id) { cellData in
+                        let data: Data? = switch cellData.id {
+                        case "RequestBody":
+                            viewModel.operationRequestBodyData()
+                        case "RequestHeaders":
+                            viewModel.operationRequestHeadersData()
+                        case "ResponseBody":
+                            viewModel.operationResponseBodyData()
+                        case "ResponseHeaders":
+                            viewModel.operationResponseHeadersData()
+                        default:
+                            nil
+                        }
+                        if let data {
+                            CustomContentNavigationLink(
+                                contentView: {
+                                    HDetailedRow(data: cellData)
+                                },
+                                destination: {
+                                    BodyViewerConfigurator.createModule(data: data).view
+                                }
+                            )
+                            .listRowInsets(.zero)
+                        } else {
+                            HDetailedRow(data: cellData)
+                        }
+                    }
+                } header: {
+                    if let title = sectionData.title {
+                        Text(title)
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
+    let requestJsonData = """
+{
+    "type": "test_type"
+}
+"""
+        .data(using: .utf8)
+    let responseJsonData = """
+{
+    "glossary": {
+        "title": "example glossary",
+        "GlossDiv": {
+            "title": "S",
+            "GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+                    "SortAs": "SGML",
+                    "GlossTerm": "Standard Generalized Markup Language",
+                    "Acronym": "SGML",
+                    "Abbrev": "ISO 8879:1986",
+                    "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                        "GlossSeeAlso": ["GML", "XML"]
+                    },
+                    "GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
+"""
+        .data(using: .utf8)
     let googleOperation = NetworkViewer.Operation(
         id: UUID().uuidString,
-        request: .init(url: "https://google.com", method: "POST", headers: [:], body: nil),
-        response: nil,
-        responseData: Data(),
+        request: .init(
+            url: "https://google.com",
+            method: "GET",
+            headers: [
+                "Host": "google.com",
+                "Accept": "*/*",
+                "Content-Type": "application/json"
+            ],
+            body: requestJsonData
+        ),
+        response: .init(statusCode: 200, headers: [:]),
+        responseData: responseJsonData!,
         error: nil,
         startAt: Date().timeIntervalSince1970,
         endAt: Date().timeIntervalSince1970 + 60
     )
     let module = OperationConfigurator.createModule(operation: googleOperation)
-    return module.view
+    return NavigationView {
+        module.view
+    }
 }

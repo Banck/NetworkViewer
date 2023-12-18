@@ -1,5 +1,5 @@
 //
-//  DetailedRow.swift
+//  HDetailedRow.swift
 //
 //  Created by Sakhabaev Egor on 23.10.2023.
 //
@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-struct SettingsDetailedRow: View {
+struct HDetailedRow: View {
 
     private let data: Data
 
@@ -59,7 +59,7 @@ struct SettingsDetailedRow: View {
     }
 }
 
-extension SettingsDetailedRow {
+extension HDetailedRow {
 
     struct Data: RowIdentifible {
 
@@ -103,7 +103,7 @@ extension SettingsDetailedRow {
 
 #Preview {
     List {
-        SettingsDetailedRow(
+        HDetailedRow(
             data: .init(
                 id: nil,
                 icon: .init(
@@ -115,7 +115,7 @@ extension SettingsDetailedRow {
                 disclosureIndicator: true
             )
         )
-        SettingsDetailedRow(
+        HDetailedRow(
             data: .init(
                 id: nil,
                 icon: .init(
@@ -127,7 +127,7 @@ extension SettingsDetailedRow {
                 disclosureIndicator: true
             )
         )
-        SettingsDetailedRow(
+        HDetailedRow(
             data: .init(
                 id: nil,
                 icon: .init(
@@ -139,7 +139,7 @@ extension SettingsDetailedRow {
                 disclosureIndicator: true
             )
         )
-        SettingsDetailedRow(
+        HDetailedRow(
             data: .init(
                 id: nil,
                 icon: .init(
