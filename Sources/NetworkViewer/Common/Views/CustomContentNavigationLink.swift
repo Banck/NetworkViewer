@@ -29,14 +29,14 @@ struct CustomContentNavigationLink<ContentView: View, Destination: View>: View {
 
 
     var body: some View {
-        ZStack {
-            NavigationLink {
-                destination()
-            } label: {
-                EmptyView()
-            }
-            .opacity(0)
-            contentView()
-        }
+        contentView()
+            .background(
+                NavigationLink {
+                    destination()
+                } label: {
+                    EmptyView()
+                }
+                .opacity(0)
+            )
     }
 }

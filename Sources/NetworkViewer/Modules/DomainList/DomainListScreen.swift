@@ -70,7 +70,7 @@ struct DomainListScreen: View {
                 ForEach(cellsData, id: \.id) { data in
                     CustomContentNavigationLink(
                         contentView: {
-                            SettingsDetailedRow(data: data)
+                            HDetailedRow(data: data)
                                 .contextMenu {
                                     Button {
                                         viewModel.didSelectCopyURL(forId: data.id)

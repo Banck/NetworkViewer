@@ -15,9 +15,218 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
     private var output: OperationModuleOutput?
     private var operation: NetworkViewer.Operation
 
-    init(operation: NetworkViewer.Operation, output:OperationModuleOutput? = nil) {
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
+        return formatter
+    }()
+    private var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = NumberFormatter.Style.decimal
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        return formatter
+    }()
+    private var byteCountFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        formatter.isAdaptive = false
+        formatter.allowedUnits = [.useKB, .useMB, .useGB]
+        return formatter
+    }()
+
+    private lazy var domain: String = {
+        URL(string: operation.request.url)?.host ?? ""
+    }()
+
+    var title: String {
+        "\(operation.request.method) \(domain)"
+    }
+
+    var cURL: String {
+        operation.request.cURL
+    }
+
+    var shareData: String {
+        OperationMapper.jsonFrom(operation)
+    }
+
+    @Published var data: OperationData?
+
+    init(operation: NetworkViewer.Operation, output: OperationModuleOutput? = nil) {
         self.operation = operation
         self.output = output
+    }
+
+    func operationRequestBodyData() -> Data? {
+        let data = operation.request.body
+        return data?.isEmpty == false ? data : nil
+    }
+
+    func operationRequestHeadersData() -> Data? {
+        let headers = operation.request.headers
+        guard
+            !headers.isEmpty,
+            let jsonString = headers.getJsonString(),
+            !jsonString.isEmpty
+        else {
+            return nil
+        }
+        return jsonString.data(using: .utf8)
+    }
+
+    func operationResponseBodyData() -> Data? {
+        let data = operation.responseData
+        return data.isEmpty == false ? data : nil
+    }
+
+    func operationResponseHeadersData() -> Data? {
+        guard
+            let headers = operation.response?.headers,
+            !headers.isEmpty,
+            let jsonString = headers.getJsonString(),
+            !jsonString.isEmpty
+        else {
+            return nil
+        }
+        return jsonString.data(using: .utf8)
+    }
+
+    // MARK: - Lifecycle -
+    func viewWillAppear() { 
+        self.data = prepareData(operation: operation)
+    }
+}
+
+// MARK: - Private methods
+private extension OperationViewModel {
+
+    func prepareData(operation: NetworkViewer.Operation) -> OperationData {
+        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? 0)
+        let startDate = Date(timeIntervalSince1970: operation.startAt)
+        var status = "Unknown"
+        if let statusCode {
+            status = "\(statusCode.rawValue) " + statusCode.description
+        }
+        var duration: String?
+        if let endAt = operation.endAt {
+            let endDate = Date(timeIntervalSince1970: endAt)
+            let timeInterval = endDate.timeIntervalSince(startDate)
+            if timeInterval > 60 {
+                numberFormatter.positiveSuffix = " min"
+                numberFormatter.maximumFractionDigits = 2
+                duration = numberFormatter.string(for: timeInterval / 60)
+            }
+            if timeInterval > 1 {
+                numberFormatter.positiveSuffix = " sec"
+                numberFormatter.maximumFractionDigits = 2
+                duration = numberFormatter.string(for: timeInterval)
+            } else {
+                numberFormatter.maximumFractionDigits = 0
+                numberFormatter.positiveSuffix = " ms"
+                duration = numberFormatter.string(for: timeInterval * 1000)
+            }
+        }
+        let startTime = dateFormatter.string(from: Date(timeIntervalSince1970: operation.startAt))
+        var endTime = "Unknown"
+        if let endAt = operation.endAt {
+            endTime = dateFormatter.string(from: Date(timeIntervalSince1970: endAt))
+        }
+        let success = (200...299).contains(statusCode?.rawValue ?? 0)
+
+        return OperationData(
+            success: success,
+            status: status,
+            url: operation.request.url,
+            method: operation.request.method,
+            startTime: startTime,
+            endTime: endTime,
+            duration: duration,
+            sectionsData: prepareSectionsData(operation: operation)
+        )
+    }
+
+    func prepareSectionsData(operation: NetworkViewer.Operation) -> [OperationData.SectionData] {
+        let request = operation.request
+        let response = operation.response
+
+        // Request
+        var requestBodySize = "Empty"
+        if 
+            request.body?.isEmpty == false,
+            let size = byteCountFormatter.string(for: request.body?.count)
+        {
+            requestBodySize = size
+        }
+        var requestHeadersCount = "Empty"
+        if !request.headers.isEmpty {
+            requestHeadersCount = request.headers.count.description
+        }
+
+        // Response
+        var responseBodySize = "Empty"
+        if 
+            operation.responseData.isEmpty == false,
+            let size = byteCountFormatter.string(for: operation.responseData.count)
+        {
+            responseBodySize = size
+        }
+        var responseHeadersCount = "Empty"
+        if let headers = response?.headers, !headers.isEmpty {
+            responseHeadersCount = headers.count.description
+        }
+
+        // Cell Data
+        let requestCellData: [HDetailedRow.Data] = [
+            .init(
+                id: "RequestBody",
+                icon: .init(
+                    image: .init(systemName: "arrow.up.circle.fill")!,
+                    color: .blue
+                ),
+                title: .init(text: "Body"),
+                detail: .init(text: requestBodySize),
+                disclosureIndicator: request.body?.isEmpty == false
+            ),
+            .init(
+                id: "RequestHeaders",
+                icon: .init(
+                    image: .init(systemName: "list.bullet.circle.fill")!,
+                    color: .blue
+                ),
+                title: .init(text: "Headers"),
+                detail: .init(text: requestHeadersCount),
+                disclosureIndicator: request.headers.isEmpty == false
+            )
+        ]
+
+        let responseCellData: [HDetailedRow.Data] = [
+            .init(
+                id: "ResponseBody",
+                icon: .init(
+                    image: .init(systemName: "arrow.down.circle.fill")!,
+                    color: .blue
+                ),
+                title: .init(text: "Body"),
+                detail: .init(text: responseBodySize),
+                disclosureIndicator: operation.responseData.isEmpty == false
+            ),
+            .init(
+                id: "ResponseHeaders",
+                icon: .init(
+                    image: .init(systemName: "list.bullet.circle.fill")!,
+                    color: .blue
+                ),
+                title: .init(text: "Headers"),
+                detail: .init(text: responseHeadersCount),
+                disclosureIndicator: response?.headers.isEmpty == false
+            )
+        ]
+
+        return [
+            .init(id: "Request", title: "Request", cellData: requestCellData),
+            .init(id: "Response", title: "Response", cellData: responseCellData)
+        ]
     }
 }
 

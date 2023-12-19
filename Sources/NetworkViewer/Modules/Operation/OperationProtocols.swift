@@ -23,6 +23,14 @@ struct OperationModuleOutput {
 // MARK: - Presenter
 protocol OperationViewModelInterface: ObservableObject {
 
+    var title: String { get }
+    var data: OperationData? { get }
+    var cURL: String { get }
+    func operationRequestBodyData() -> Data?
+    func operationRequestHeadersData() -> Data?
+    func operationResponseBodyData() -> Data?
+    func operationResponseHeadersData() -> Data?
+
     // MARK: - Lifecycle
     func viewDidLoad()
     func viewWillAppear()

@@ -27,8 +27,8 @@ struct DomainListModuleOutput {
 protocol DomainListViewModelInterface: ObservableObject {
 
     var domainsData: [DomainData] { get }
-    var pinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
-    var unpinnedDomainCellsData: [SettingsDetailedRow.Data] { get }
+    var pinnedDomainCellsData: [HDetailedRow.Data] { get }
+    var unpinnedDomainCellsData: [HDetailedRow.Data] { get }
     var searchText: String { get }
 
     func operations(forDomain domain: String) -> [NetworkViewer.Operation]

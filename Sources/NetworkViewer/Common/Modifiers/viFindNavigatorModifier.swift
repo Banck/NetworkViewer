@@ -12,7 +12,6 @@ struct viFindNavigatorModifier: ViewModifier {
     let isPresented: Binding<Bool>
 
     public func body(content: Content) -> some View {
-
         if #available(iOS 16.0, *) {
             content
                 .findNavigator(isPresented: isPresented)

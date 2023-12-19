@@ -23,7 +23,7 @@ struct OperationListModuleOutput {
 // MARK: - Presenter
 protocol OperationListViewModelInterface: ObservableObject {
     
-    var title: String {get }
+    var title: String { get }
     var operationsData: [OperationRow.Data] { get }
     var isFavorite: Bool { get }
 

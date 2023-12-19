@@ -9,6 +9,6 @@ import Foundation
 
 struct DomainData {
 
-    let cellData: SettingsDetailedRow.Data
+    let cellData: HDetailedRow.Data
     let isPinned: Bool
 }

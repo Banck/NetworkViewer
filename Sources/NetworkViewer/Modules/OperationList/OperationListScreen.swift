@@ -19,8 +19,7 @@ struct OperationListScreen: View, OperationListView {
         List(viewModel.operationsData, id: \.id) { data in
             NavigationLink {
                 if let operation = viewModel.operation(forId: data.id) {
-                    BodyViewerConfigurator.createModule(data: operation.responseData).view
-//                    OperationConfigurator.createModule(operation: operation).view
+                    OperationConfigurator.createModule(operation: operation).view
                 } else {
                     EmptyView()
                 }

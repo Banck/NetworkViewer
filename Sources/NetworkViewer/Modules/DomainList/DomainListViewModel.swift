@@ -29,10 +29,10 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     @Published var domainsData: [DomainData] = []
     @Published var searchText: String = ""
 
-    var pinnedDomainCellsData: [SettingsDetailedRow.Data] {
+    var pinnedDomainCellsData: [HDetailedRow.Data] {
         domainsData.filter(\.isPinned).map(\.cellData)
     }
-    var unpinnedDomainCellsData: [SettingsDetailedRow.Data] {
+    var unpinnedDomainCellsData: [HDetailedRow.Data] {
         domainsData.filter { !$0.isPinned }.map(\.cellData)
     }
 
@@ -79,7 +79,7 @@ private extension DomainListViewModel {
                 return (lhsMin?.startAt ?? 0) > (rhsMin?.startAt ?? 0)
             }
             .map { (domain: String, operations: [NetworkViewer.Operation]) in
-                let icon: SettingsDetailedRow.Data.Icon
+                let icon: HDetailedRow.Data.Icon
                 let hasFailedRequest = operations.contains { $0.error != nil || ($0.response?.statusCode ?? 200) > 400 }
                 if hasFailedRequest  {
                     icon = .init(image: .init(systemName: "exclamationmark.triangle")!, color: .yellow)
