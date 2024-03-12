@@ -89,6 +89,7 @@ struct OperationScreen: View, OperationView {
                 }
             }
             Text(data.url)
+                .viTextSelection(isEnabled: true)
                 .foregroundColor(.blue)
         }
         .standardListPadding()

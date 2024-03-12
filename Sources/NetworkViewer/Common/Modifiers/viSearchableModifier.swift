@@ -18,7 +18,6 @@ struct viSearchableModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-
         if #available(iOS 15.0, *) {
             content
                 .searchable(text: text, prompt: prompt)
