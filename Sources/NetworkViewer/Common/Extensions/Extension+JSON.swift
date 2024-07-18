@@ -22,9 +22,9 @@ extension Data {
         }
     }
 
-    var jsonObject: [String: Any]? {
+    var jsonObject: Any? {
         do {
-            return try JSONSerialization.jsonObject(with: self, options: [.mutableContainers]) as? [String: Any]
+            return try JSONSerialization.jsonObject(with: self, options: [.mutableContainers])
         } catch {
             #if DEBUG
             print(error)
@@ -35,11 +35,9 @@ extension Data {
     }
 }
 
-extension Dictionary {
-
-    func getJsonString(encoding: String.Encoding = .utf8) -> String? {
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])
-        else { return nil }
-        return String(data: jsonData, encoding: encoding)
-    }
+func getJsonString(jsonObject: Any?, encoding: String.Encoding = .utf8) -> String? {
+    guard let jsonObject else { return nil }
+    guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted])
+    else { return nil }
+    return String(data: jsonData, encoding: encoding)
 }

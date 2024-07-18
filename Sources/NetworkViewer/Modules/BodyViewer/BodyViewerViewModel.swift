@@ -16,7 +16,7 @@ class BodyViewerViewModel: BodyViewerViewModelInterface, ObservableObject {
     public let text: String
 
     init(data: Data, output: BodyViewerModuleOutput? = nil) {
-        self.text = data.jsonObject?.getJsonString() ?? "-"
+        self.text = getJsonString(jsonObject: data.jsonObject) ?? "-"
         self.output = output
     }
 }

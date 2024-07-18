@@ -71,12 +71,12 @@ struct OperationMapper {
             "end_at": "\(endTime != nil ? (endTime! + " UTC") : "null")",
             "duration": "\(duration ?? "null")",
             "request": {
-                "headers": \(operation.request.headers.getJsonString() ?? "null"),
-                "body": \(operation.request.body?.jsonObject?.getJsonString() ?? "null")
+                "headers": \(getJsonString(jsonObject: operation.request.headers) ?? "null"),
+                "body": \(getJsonString(jsonObject: operation.request.body?.jsonObject) ?? "null")
             },
             "response": {
-                "headers": \(operation.response?.headers.getJsonString() ?? "null"),
-                "body": \(operation.responseData.jsonObject?.getJsonString() ?? "null")
+                "headers": \(getJsonString(jsonObject: operation.response?.headers) ?? "null"),
+                "body": \(getJsonString(jsonObject: operation.responseData.jsonObject) ?? "null")
             },
             "error": {
                 "code": "\(operation.error?.code.description ?? "null")",

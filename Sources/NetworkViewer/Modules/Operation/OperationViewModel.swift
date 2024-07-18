@@ -67,7 +67,7 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
         let headers = operation.request.headers
         guard
             !headers.isEmpty,
-            let jsonString = headers.getJsonString(),
+            let jsonString = getJsonString(jsonObject: headers),
             !jsonString.isEmpty
         else {
             return nil
@@ -84,7 +84,7 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
         guard
             let headers = operation.response?.headers,
             !headers.isEmpty,
-            let jsonString = headers.getJsonString(),
+            let jsonString = getJsonString(jsonObject: headers),
             !jsonString.isEmpty
         else {
             return nil
