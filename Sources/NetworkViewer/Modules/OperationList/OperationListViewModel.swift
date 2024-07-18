@@ -91,7 +91,7 @@ private extension OperationListViewModel {
                 || $0.request.method.lowercased() == searchText.lowercased()
             }
             .map {
-                let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? 0)
+                let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? $0.error?.code ?? 0)
                 let startDate = Date(timeIntervalSince1970: $0.startAt)
                 var status = "Unknown"
                 if let statusCode {

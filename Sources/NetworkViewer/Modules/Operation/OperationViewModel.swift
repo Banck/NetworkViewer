@@ -102,7 +102,7 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
 private extension OperationViewModel {
 
     func prepareData(operation: NetworkViewer.Operation) -> OperationData {
-        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? 0)
+        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? operation.error?.code ?? 0)
         let startDate = Date(timeIntervalSince1970: operation.startAt)
         var status = "Unknown"
         if let statusCode {

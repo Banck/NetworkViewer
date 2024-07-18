@@ -31,7 +31,7 @@ struct OperationMapper {
     }()
 
     static func jsonFrom(_ operation: NetworkViewer.Operation) -> String {
-        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? 0)
+        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? operation.error?.code ?? 0)
         let startDate = Date(timeIntervalSince1970: operation.startAt)
         var status = "Unknown"
         if let statusCode {
