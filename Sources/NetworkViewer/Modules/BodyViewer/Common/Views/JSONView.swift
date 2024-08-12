@@ -21,6 +21,24 @@ struct DebugJsonView: View {
     }
 }
 
+private struct CopibleText: View {
+
+    let text: String
+
+    init(_ text: String) {
+        self.text = text
+    }
+
+    var body: some View {
+        Text(text)
+            .contextMenu {
+                Button(action: { UIPasteboard.general.string = text }) {
+                    Label("Copy", systemImage: "doc.on.doc")
+                }
+            }
+    }
+}
+
 private struct JsonView: View {
 
     let key: String?
@@ -33,29 +51,29 @@ private struct JsonView: View {
                 .jsonKey(key)
         }
         if case .int(let int) = element {
-            Text(int.description)
+            CopibleText(int.description)
                 .foregroundColor(.init(UIColor.systemOrange))
                 .jsonKey(key)
         }
         if case .num(let num) = element {
-            Text(num.description)
+            CopibleText(num.description)
                 .foregroundColor(.init(UIColor.systemOrange))
                 .jsonKey(key)
         }
         if case .flag(let flag) = element {
-            Text("\(flag ? "true" : "false")")
+            CopibleText("\(flag ? "true" : "false")")
                 .foregroundColor(.init(UIColor.systemBlue))
                 .jsonKey(key)
         }
         if case .null = element {
-            Text("null")
+            CopibleText("null")
                 .foregroundColor(.init(UIColor.systemBlue))
                 .jsonKey(key)
         }
         if case .error(let body) = element {
             Text("Error!")
                 .foregroundColor(.init(UIColor.systemRed))
-            Text(body)
+            CopibleText(body)
                 .foregroundColor(.init(UIColor.systemGray))
         }
         if case .nested(let obj) = element {
@@ -112,7 +130,7 @@ private struct StringJsonView: View {
                 .foregroundColor(.init(UIColor.systemGreen))
                 .contextMenu {
                     Button(action: { UIPasteboard.general.string = string }) {
-                        Label("Copy full text", systemImage: "doc.on.doc")
+                        Label("Copy", systemImage: "doc.on.doc")
                     }
                 }
         }
