@@ -35,12 +35,12 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
         return formatter
     }()
 
-    private lazy var domain: String = {
-        URL(string: operation.request.url)?.host ?? ""
+    private lazy var lastPathComponent: String = {
+        URL(string: operation.request.url)?.lastPathComponent ?? ""
     }()
 
     var title: String {
-        "\(operation.request.method) \(domain)"
+        "\(operation.request.method) /\(lastPathComponent)"
     }
 
     var cURL: String {

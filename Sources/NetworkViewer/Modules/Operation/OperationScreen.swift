@@ -174,7 +174,7 @@ struct OperationScreen: View, OperationView {
     let googleOperation = NetworkViewer.Operation(
         id: UUID().uuidString,
         request: .init(
-            url: "https://google.com",
+            url: "https://google.com/api/user/info",
             method: "GET",
             headers: [
                 "Host": "google.com",

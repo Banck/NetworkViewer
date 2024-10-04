@@ -38,20 +38,24 @@ struct BodyViewerScreen: View, BodyViewerView {
         }
         .padding([.leading, .trailing], 16)
         .toolbar {
-            if #available(iOS 16.0, *) {
-                Button {
-                    textDisplayStyle = .raw
-                    // Hack to avoid bug with FindNavigator when TextEditor not always visibles
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                        textDisplayStyle = .json
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack {
+                    Button {
                         textDisplayStyle = .raw
-                        isShowingFindNavigator.toggle()
+                        // Hack to avoid bug with FindNavigator when TextEditor not always visibles
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            textDisplayStyle = .json
+                            textDisplayStyle = .raw
+                            isShowingFindNavigator.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "magnifyingglass")
                     }
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                }
-                ShareLink(items: [viewModel.text]) {
-                    Image(systemName: "square.and.arrow.up")
+                    if #available(iOS 16.0, *) {
+                        ShareLink(items: [viewModel.text]) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                    }
                 }
             }
         }
