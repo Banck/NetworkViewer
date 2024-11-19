@@ -9,7 +9,7 @@ import Foundation
 
 public extension NetworkViewer {
     
-    struct Operation {
+    public struct Operation {
 
         let id: String
         let request: Request

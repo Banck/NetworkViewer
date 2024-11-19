@@ -13,6 +13,7 @@ import SwiftUI
 struct OperationScreen: View, OperationView {
 
     @StateObject var viewModel: OperationViewModel
+    @State private var shareData: ShareService.Result?
 
     var body: some View {
         VStack {
@@ -26,20 +27,15 @@ struct OperationScreen: View, OperationView {
                 EmptyView()
             }
         }
+        .sheet(item: $shareData) { data in
+            ActivityViewController(activityItems: [data.get()])
+        }
         .toolbar {
             Menu {
-                viShareButton(
-                    contentView: {
-                        Label("cURL", systemImage: "doc.badge.arrow.up")
-                    },
-                    data: viewModel.cURL
-                )
-                .foregroundColor(.blue)
-                viShareButton(
-                    contentView: {
-                        Label("All", systemImage: "doc.on.doc")
-                    },
-                    data: viewModel.shareData
+                ShareProvidersView(
+                    providers: viewModel.getShareProviders(),
+                    operations: viewModel.getOperationsData(),
+                    shareData: $shareData
                 )
             } label: {
                 Image(systemName: "square.and.arrow.up")
