@@ -129,6 +129,6 @@ struct DomainListScreen: View {
     let operations: [NetworkViewer.Operation] = [
         googleOperation, appleOperation, appleSecondOperation
     ]
-    let module = DomainListConfigurator.createModule(operations: operations)
+    let module = DomainListConfigurator.createModule(operations: operations, shareService: ShareService())
     return module.view
 }

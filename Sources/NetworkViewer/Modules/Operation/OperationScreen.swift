@@ -13,7 +13,6 @@ import SwiftUI
 struct OperationScreen: View, OperationView {
 
     @StateObject var viewModel: OperationViewModel
-    @State private var shareData: ShareService.Result?
 
     var body: some View {
         VStack {
@@ -27,19 +26,10 @@ struct OperationScreen: View, OperationView {
                 EmptyView()
             }
         }
-        .sheet(item: $shareData) { data in
-            ActivityViewController(activityItems: [data.get()])
-        }
         .toolbar {
-            Menu {
-                ShareProvidersView(
-                    providers: viewModel.getShareProviders(),
-                    operations: viewModel.getOperationsData(),
-                    shareData: $shareData
-                )
-            } label: {
-                Image(systemName: "square.and.arrow.up")
-            }
+            ShareProvidersView(
+                operations: viewModel.getOperationsData()
+            )
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)

@@ -16,7 +16,6 @@ protocol OperationModuleInput: AnyObject { }
 
 // MARK: - OperationModuleOutput
 struct OperationModuleOutput {
-    let didRequestProviders: (() -> [ShareProvider])?
 //    let didSelectSearchResult: (_ searchResult: String) -> Void
 }
 

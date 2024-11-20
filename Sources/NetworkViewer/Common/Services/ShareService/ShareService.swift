@@ -15,7 +15,7 @@ public protocol ShareProvider {
     func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result?
 }
 
-public class ShareService {
+public class ShareService: ObservableObject {
     public enum Result: Hashable, Identifiable {
         public var id: Self { self }
         case url(URL)
@@ -31,7 +31,7 @@ public class ShareService {
         }
     }
     
-    private var providers: [ShareProvider]
+    @Published private (set)var providers: [ShareProvider]
     
     init(providers: [ShareProvider] = []) {
         self.providers = providers
@@ -41,7 +41,19 @@ public class ShareService {
         providers.append(provider)
     }
     
-    func availableProviders() -> [ShareProvider] {
-        return providers
+    func addProviders(_ providers: [ShareProvider]) {
+        self.providers.append(contentsOf: providers)
+    }
+}
+
+
+private struct ShareServiceEnvironmentKey: EnvironmentKey {
+    static let defaultValue: ShareService = ShareService(providers: [CurlShareProvider() ,TextShareProvider(), FileShareProvider()])
+}
+
+extension EnvironmentValues {
+    var shareService: ShareService {
+        get { self[ShareServiceEnvironmentKey.self] }
+        set { self[ShareServiceEnvironmentKey.self] = newValue }
     }
 }

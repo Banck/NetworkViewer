@@ -14,7 +14,6 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
 
     private var output: OperationModuleOutput?
     private var operation: NetworkViewer.Operation
-    private let shareService: ShareService
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -60,16 +59,6 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
     ) {
         self.operation = operation
         self.output = output
-    
-        var providers: [ShareProvider] = [CurlShareProvider() ,TextShareProvider(), FileShareProvider()]
-        if let externalProviders = output?.didRequestProviders?() {
-            providers.append(contentsOf: externalProviders)
-        }
-        self.shareService = ShareService(providers: providers)
-    }
-    
-    func getShareProviders() -> [ShareProvider] {
-        shareService.availableProviders()
     }
     
     func getOperationsData() -> [NetworkViewer.Operation] {
