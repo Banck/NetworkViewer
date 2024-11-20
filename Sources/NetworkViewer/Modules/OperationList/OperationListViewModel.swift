@@ -46,6 +46,10 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
         }
         self.output = output
     }
+    
+    func getAllOperations() -> [NetworkViewer.Operation] {
+        operations
+    }
 
     func operation(forId id: String) -> NetworkViewer.Operation? {
         operations.first { $0.id == id }

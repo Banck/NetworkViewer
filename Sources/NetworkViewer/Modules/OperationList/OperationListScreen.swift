@@ -68,6 +68,7 @@ struct OperationListScreen: View, OperationListView {
                     Image(systemName: viewModel.isFavorite ? "pin.fill" : "pin")
                 }
             )
+            ShareProvidersView(operations: viewModel.getAllOperations())
         }
         .onLoad {
             viewModel.viewDidLoad()
