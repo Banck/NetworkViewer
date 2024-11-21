@@ -27,23 +27,9 @@ struct OperationScreen: View, OperationView {
             }
         }
         .toolbar {
-            Menu {
-                viShareButton(
-                    contentView: {
-                        Label("cURL", systemImage: "doc.badge.arrow.up")
-                    },
-                    data: viewModel.cURL
-                )
-                .foregroundColor(.blue)
-                viShareButton(
-                    contentView: {
-                        Label("All", systemImage: "doc.on.doc")
-                    },
-                    data: viewModel.shareData
-                )
-            } label: {
-                Image(systemName: "square.and.arrow.up")
-            }
+            ShareProvidersView(
+                operations: viewModel.getOperationsData()
+            )
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)

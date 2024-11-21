@@ -53,9 +53,16 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
 
     @Published var data: OperationData?
 
-    init(operation: NetworkViewer.Operation, output: OperationModuleOutput? = nil) {
+    init(
+        operation: NetworkViewer.Operation,
+        output: OperationModuleOutput? = nil
+    ) {
         self.operation = operation
         self.output = output
+    }
+    
+    func getOperationsData() -> [NetworkViewer.Operation] {
+        [operation]
     }
 
     func operationRequestBodyData() -> Data? {

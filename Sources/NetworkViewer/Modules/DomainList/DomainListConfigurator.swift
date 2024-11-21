@@ -15,11 +15,12 @@ struct DomainListConfigurator {
 
     static func createModule(
         operations: [NetworkViewer.Operation],
-        output: DomainListModuleOutput? = nil
+        output: DomainListModuleOutput? = nil,
+        shareService: ShareService
     ) -> (view: some View, input: DomainListModuleInput) {
         let viewModel = DomainListViewModel(operations: operations, output: output)
         let view = DomainListScreen(viewModel: viewModel)
-
+            .environment(\.shareService, shareService)
         return (view, viewModel)
     }
 }

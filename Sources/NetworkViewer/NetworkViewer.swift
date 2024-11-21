@@ -27,9 +27,14 @@ public class NetworkViewer {
      Present screen with network operations.
      - parameter operations: you can pass specify array of operations otherwise NetworkViewer.operations will be used.
      **/
-    public static func show() {
+    public static func show(_ shareProviders: [ShareProvider]? = nil) {
         guard let topController = UIApplication.topViewController() else { return }
-        let module = DomainListConfigurator.createModule(operations: operations)
+        var providers: [ShareProvider] = [CurlShareProvider() ,TextShareProvider(), FileShareProvider()]
+        if let shareProviders {
+            providers.append(contentsOf: shareProviders)
+        }
+        let shareService = ShareService(providers: providers)
+        let module = DomainListConfigurator.createModule(operations: operations, shareService: shareService)
         domainListInput = module.input
         topController.present(UIHostingController(rootView: module.view), animated: true)
     }

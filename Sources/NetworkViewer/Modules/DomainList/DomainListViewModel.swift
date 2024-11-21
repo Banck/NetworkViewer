@@ -44,6 +44,10 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
         self.filteredOperations = operations
         self.output = output
     }
+    
+    func getAllOperations() -> [NetworkViewer.Operation] {
+        operations
+    }
 
     func operations(forDomain domain: String) -> [NetworkViewer.Operation] {
         operationsByDomain[domain] ?? []
