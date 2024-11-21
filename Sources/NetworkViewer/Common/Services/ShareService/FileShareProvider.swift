@@ -10,7 +10,7 @@ import UIKit
 
 final class FileShareProvider: ShareProvider {
     var displayName: String { "file" }
-    var icon: UIImage? = UIImage(systemName: "arrow.down.doc.fill")
+    var icon: UIImage? = UIImage(systemName: "arrow.down.doc")
 
     func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result? {
         let json = mapToJSON(for: operations)
