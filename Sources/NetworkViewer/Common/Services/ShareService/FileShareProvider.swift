@@ -13,8 +13,9 @@ final class FileShareProvider: ShareProvider {
     var icon: UIImage? = UIImage(systemName: "arrow.down.doc.fill")
 
     func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result? {
-        let combinedContent = operations.map { OperationMapper.jsonFrom($0) }.joined(separator: "\n\n")
-        if let fileURL = createTempFile(with: combinedContent) {
+        let json = mapToJSON(for: operations)
+        
+        if let fileURL = createTempFile(with: json) {
             return .url(fileURL)
         }
         return nil
@@ -22,7 +23,7 @@ final class FileShareProvider: ShareProvider {
 
     private func createTempFile(with content: String) -> URL? {
         let tempDirectory = FileManager.default.temporaryDirectory
-        let fileURL = tempDirectory.appendingPathComponent("operations.txt")
+        let fileURL = tempDirectory.appendingPathComponent("operations.json")
 
         do {
             try content.write(to: fileURL, atomically: true, encoding: .utf8)

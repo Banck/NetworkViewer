@@ -15,6 +15,25 @@ public protocol ShareProvider {
     func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result?
 }
 
+extension ShareProvider {
+    func mapToJSON(for operations: [NetworkViewer.Operation]) -> String {
+        let json: String
+        if operations.count == 1 {
+            json = OperationMapper.jsonFrom(operations[0])
+        } else {
+            let operationsArray = operations.map { OperationMapper.jsonFrom($0) }
+            json = """
+            {
+              "operations": [
+                \(operationsArray.joined(separator: ",\n"))
+              ]
+            }
+            """
+        }
+        return json
+    }
+}
+
 public class ShareService: ObservableObject {
     public enum Result: Hashable, Identifiable {
         public var id: Self { self }

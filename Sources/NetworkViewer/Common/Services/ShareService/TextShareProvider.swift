@@ -13,7 +13,7 @@ final class TextShareProvider: ShareProvider {
     var icon: UIImage? = UIImage(systemName: "doc.on.doc")
 
     func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result? {
-        let jsons = operations.map { OperationMapper.jsonFrom($0) }.joined(separator: "\n\n")
-        return .text(jsons)
+        let json = mapToJSON(for: operations)
+        return .text(json)
     }
 }
