@@ -52,23 +52,33 @@ struct OperationListScreen: View, OperationListView {
             viewModel.didChangeSearchText()
         }
         .toolbar {
-            Button {
-                viewModel.deleteDomainOperations()
-                presentation.wrappedValue.dismiss()
-            } label: {
-                Image(systemName: "trash")
-            }
-            Button(
-                action: {
-                    let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                    impactMed.impactOccurred()
-                    viewModel.toggleFavorite()
-                },
-                label: {
-                    Image(systemName: viewModel.isFavorite ? "pin.fill" : "pin")
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Button(
+                        action: {
+                            let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                            impactMed.impactOccurred()
+                            viewModel.toggleFavorite()
+                        },
+                        label: {
+                            Label("Pin", systemImage: viewModel.isFavorite ? "pin.fill" : "pin")
+                        }
+                    )
+                    Label {
+                        Text("Share")
+                    } icon: {
+                        ShareProvidersView(operations: viewModel.getAllOperations())
+                    }
+                    Button {
+                        viewModel.deleteDomainOperations()
+                        presentation.wrappedValue.dismiss()
+                    } label: {
+                        Label("Clear", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
                 }
-            )
-            ShareProvidersView(operations: viewModel.getAllOperations())
+            }
         }
         .onLoad {
             viewModel.viewDidLoad()
