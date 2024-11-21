@@ -15,20 +15,20 @@ struct ShareProvidersView: View {
     var body: some View {
         Menu {
             ForEach(shareService.providers, id: \.displayName) { provider in
-                if let shareItem = provider.shareData(for: operations) {
-                    Button {
-                        shareData = shareItem
-                    } label: {
-                        Label {
-                            Text(provider.displayName)
-                        } icon: {
-                            if let image = provider.icon {
-                                Image(uiImage: image)
-                            }
+                Button {
+                    Task {
+                        shareData = await provider.shareData(for: operations)
+                    }
+                } label: {
+                    Label {
+                        Text(provider.displayName)
+                    } icon: {
+                        if let image = provider.icon {
+                            Image(uiImage: image)
                         }
                     }
-                    .foregroundColor(.blue)
                 }
+                .foregroundColor(.blue)
             }
         } label: {
             Image(systemName: "square.and.arrow.up")
@@ -38,4 +38,3 @@ struct ShareProvidersView: View {
         }
     }
 }
-
