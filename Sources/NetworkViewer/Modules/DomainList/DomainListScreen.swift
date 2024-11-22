@@ -27,7 +27,7 @@ struct DomainListScreen: View {
                     Image(systemName: "trash")
                 }
                 
-                ShareProvidersView(operations: viewModel.getAllOperations())
+                ShareOptionsView(data: viewModel.getAllOperations())
             }
             .emptyState(
                 isEnabled: viewModel.domainsData.isEmpty && !viewModel.searchText.isEmpty,

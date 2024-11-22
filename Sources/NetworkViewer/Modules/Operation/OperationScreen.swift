@@ -27,8 +27,8 @@ struct OperationScreen: View, OperationView {
             }
         }
         .toolbar {
-            ShareProvidersView(
-                operations: viewModel.getOperationsData()
+            ShareOptionsView(
+                data: viewModel.getOperationsData()
             )
         }
         .navigationTitle(viewModel.title)

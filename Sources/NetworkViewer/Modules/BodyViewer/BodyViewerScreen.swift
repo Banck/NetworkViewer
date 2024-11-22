@@ -51,11 +51,8 @@ struct BodyViewerScreen: View, BodyViewerView {
                     } label: {
                         Image(systemName: "magnifyingglass")
                     }
-                    if #available(iOS 16.0, *) {
-                        ShareLink(items: [viewModel.text]) {
-                            Image(systemName: "square.and.arrow.up")
-                        }
-                    }
+                    
+                    ShareOptionsView(data: viewModel.text)
                 }
             }
         }

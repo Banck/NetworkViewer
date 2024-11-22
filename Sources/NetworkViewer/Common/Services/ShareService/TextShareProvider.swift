@@ -11,11 +11,22 @@ import UIKit
 final class TextShareProvider: ShareProvider {
     var displayName: String = "Text"
     var icon: UIImage? = UIImage(systemName: "doc.on.doc")
-
-    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult? {
+    
+    private let handlers: [ShareDataHandler] = [
+        OperationsToJsonDataHandler(),
+        StringDataHandler()
+    ]
+    
+    func isAvailable(for data: Any) -> Bool {
+        handlers.contains { $0.canHandle(data) }
+    }
+    
+    func shareData(for data: Any) async -> Any? {
+        guard let handler = handlers.first(where: { $0.canHandle(data) }) else { return nil }
+        
         return await Task.detached {
-            let json = self.mapToJSON(for: operations)
-            return .text(json)
+            guard let result = handler.process(data) else { return nil }
+            return result
         }.value
     }
 }
