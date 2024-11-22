@@ -17,7 +17,10 @@ struct ShareProvidersView: View {
             ForEach(shareService.providers, id: \.displayName) { provider in
                 Button {
                     Task {
-                        let controller = UIActivityViewController(activityItems: [await provider.shareData(for: operations)], applicationActivities: nil)
+                        let controller = UIActivityViewController(
+                            activityItems: [await provider.shareData(for: operations)?.value],
+                            applicationActivities: nil
+                        )
                         UIApplication.topViewController()?.present(controller, animated: true)
                     }
                 } label: {
