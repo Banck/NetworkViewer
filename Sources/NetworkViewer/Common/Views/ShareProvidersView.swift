@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct ShareProvidersView: View {
+
     let operations: [NetworkViewer.Operation]
-    @State private var shareData: ShareService.Result?
     @Environment(\.shareService) private var shareService: ShareService
-    
+
     var body: some View {
         Menu {
             ForEach(shareService.providers, id: \.displayName) { provider in
                 Button {
                     Task {
-                        shareData = await provider.shareData(for: operations)
+                        let controller = UIActivityViewController(activityItems: [await provider.shareData(for: operations)], applicationActivities: nil)
+                        UIApplication.topViewController()?.present(controller, animated: true)
                     }
                 } label: {
                     Label {
@@ -32,9 +33,6 @@ struct ShareProvidersView: View {
             }
         } label: {
             Image(systemName: "square.and.arrow.up")
-        }
-        .sheet(item: $shareData) { data in
-            ActivityViewController(activityItems: [data.get()])
         }
     }
 }

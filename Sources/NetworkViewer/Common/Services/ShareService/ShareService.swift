@@ -8,14 +8,33 @@
 import UIKit
 import SwiftUI
 
+public enum ShareResult: Identifiable, Hashable, Codable {
+
+    public var id: Self { self }
+
+    case url(URL)
+    case text(String)
+
+    var value: Any {
+        switch self {
+        case .url(let value):
+            value
+        case .text(let value):
+            value
+        }
+    }
+}
+
 public protocol ShareProvider {
+
     var displayName: String { get }
     var icon: UIImage? { get }
     
-    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareService.Result?
+    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult?
 }
 
 extension ShareProvider {
+
     func mapToJSON(for operations: [NetworkViewer.Operation]) -> String {
         let json: String
         if operations.count == 1 {
@@ -47,21 +66,7 @@ extension ShareProvider {
 }
 
 public class ShareService: ObservableObject {
-    public enum Result: Hashable, Identifiable {
-        public var id: Self { self }
-        case url(URL)
-        case text(String)
-        
-        func get() -> Any {
-            switch self {
-            case .url(let url):
-                return url
-            case .text(let text):
-                return text
-            }
-        }
-    }
-    
+
     @Published private (set)var providers: [ShareProvider]
     
     init(providers: [ShareProvider] = []) {
@@ -77,8 +82,8 @@ public class ShareService: ObservableObject {
     }
 }
 
-
 private struct ShareServiceEnvironmentKey: EnvironmentKey {
+
     static let defaultValue: ShareService = ShareService(
         providers: [
             CurlShareProvider(),
@@ -90,6 +95,7 @@ private struct ShareServiceEnvironmentKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
+
     var shareService: ShareService {
         get { self[ShareServiceEnvironmentKey.self] }
         set { self[ShareServiceEnvironmentKey.self] = newValue }
