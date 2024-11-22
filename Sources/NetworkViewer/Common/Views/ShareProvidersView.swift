@@ -16,8 +16,8 @@ struct ShareProvidersView: View {
         Menu {
             ForEach(shareService.providers, id: \.displayName) { provider in
                 Button {
-                    if let shareData = provider.shareData(for: operations)?.value {
-                        let controller = UIActivityViewController(activityItems: [shareData], applicationActivities: nil)
+                    Task {
+                        let controller = UIActivityViewController(activityItems: [await provider.shareData(for: operations)], applicationActivities: nil)
                         UIApplication.topViewController()?.present(controller, animated: true)
                     }
                 } label: {
@@ -29,10 +29,10 @@ struct ShareProvidersView: View {
                         }
                     }
                 }
+                .foregroundColor(.blue)
             }
         } label: {
             Image(systemName: "square.and.arrow.up")
         }
     }
 }
-

@@ -29,7 +29,12 @@ public class NetworkViewer {
      **/
     public static func show(_ shareProviders: [ShareProvider]? = nil) {
         guard let topController = UIApplication.topViewController() else { return }
-        var providers: [ShareProvider] = [CurlShareProvider() ,TextShareProvider(), FileShareProvider()]
+        var providers: [ShareProvider] = [
+            CurlShareProvider(),
+            TextShareProvider(),
+            FileShareProvider(),
+            HARShareProvider()
+        ]
         if let shareProviders {
             providers.append(contentsOf: shareProviders)
         }

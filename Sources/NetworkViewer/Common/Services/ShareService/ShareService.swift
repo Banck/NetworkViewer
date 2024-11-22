@@ -29,8 +29,8 @@ public protocol ShareProvider {
 
     var displayName: String { get }
     var icon: UIImage? { get }
-
-    func shareData(for operations: [NetworkViewer.Operation]) -> ShareResult?
+    
+    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult?
 }
 
 extension ShareProvider {
@@ -50,6 +50,18 @@ extension ShareProvider {
             """
         }
         return json
+    }
+    
+    func createTempFile(with content: String, filename: String = "operations.json") -> URL? {
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let fileURL = tempDirectory.appendingPathComponent(filename)
+        
+        do {
+            try content.write(to: fileURL, atomically: true, encoding: .utf8)
+            return fileURL
+        } catch {
+            return nil
+        }
     }
 }
 
@@ -72,7 +84,14 @@ public class ShareService: ObservableObject {
 
 private struct ShareServiceEnvironmentKey: EnvironmentKey {
 
-    static let defaultValue: ShareService = ShareService(providers: [CurlShareProvider() ,TextShareProvider(), FileShareProvider()])
+    static let defaultValue: ShareService = ShareService(
+        providers: [
+            CurlShareProvider(),
+            TextShareProvider(),
+            FileShareProvider(),
+            HARShareProvider()
+        ]
+    )
 }
 
 extension EnvironmentValues {
