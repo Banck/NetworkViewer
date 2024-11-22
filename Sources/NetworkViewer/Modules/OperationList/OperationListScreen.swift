@@ -67,7 +67,7 @@ struct OperationListScreen: View, OperationListView {
                     Label {
                         Text("Share")
                     } icon: {
-                        ShareProvidersView(operations: viewModel.getAllOperations())
+                        ShareOptionsView(data: viewModel.getAllOperations())
                     }
                     Button {
                         viewModel.deleteDomainOperations()

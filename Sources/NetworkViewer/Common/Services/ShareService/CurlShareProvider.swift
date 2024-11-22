@@ -9,14 +9,23 @@ import Foundation
 import UIKit
 
 final class CurlShareProvider: ShareProvider {
-
     var displayName: String = "cURL"
     var icon: UIImage? = UIImage(systemName: "doc.badge.arrow.up")
     
-    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult? {
+    private let handlers: [ShareDataHandler] = [
+        OperationsToCurlDataHandler(),
+    ]
+
+    func isAvailable(for data: Any) -> Bool {
+        handlers.contains { $0.canHandle(data) }
+    }
+    
+    func shareData(for data: Any) async -> Any? {
+        guard let handler = handlers.first(where: { $0.canHandle(data) }) else { return nil }
+        
         return await Task.detached {
-            let curlCommands = operations.map { $0.request.cURL }.joined(separator: "\n\n")
-            return .text(curlCommands)
+            guard let result = handler.process(data) else { return nil }
+            return result
         }.value
     }
 }

@@ -12,15 +12,27 @@ final class FileShareProvider: ShareProvider {
 
     var displayName: String { ".json" }
     var icon: UIImage? = UIImage(systemName: "arrow.down.doc")
-
-    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult? {
+    
+    private let handlers: [ShareDataHandler] = [
+        OperationsToJsonDataHandler(),
+        StringDataHandler()
+    ]
+    
+    func isAvailable(for data: Any) -> Bool {
+        handlers.contains { $0.canHandle(data) }
+    }
+    
+    func shareData(for data: Any) async -> Any? {
+        guard let handler = handlers.first(where: { $0.canHandle(data) }) else { return nil }
+        
         return await Task.detached {
-            let json = self.mapToJSON(for: operations)
-
-            if let fileURL = self.createTempFile(with: json) {
-                return .url(fileURL)
+            guard
+                let json = handler.process(data),
+                let fileURL = self.createTempFile(with: json)
+            else {
+                return nil
             }
-            return nil
+            return fileURL
         }.value
     }
 }
