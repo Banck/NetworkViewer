@@ -9,10 +9,11 @@ import Foundation
 import UIKit
 
 final class FileShareProvider: ShareProvider {
+
     var displayName: String { "file" }
     var icon: UIImage? = UIImage(systemName: "arrow.down.doc")
 
-    func shareData(for operations: [NetworkViewer.Operation]) -> ShareService.Result? {
+    func shareData(for operations: [NetworkViewer.Operation]) -> ShareResult? {
         let json = mapToJSON(for: operations)
         
         if let fileURL = createTempFile(with: json) {
