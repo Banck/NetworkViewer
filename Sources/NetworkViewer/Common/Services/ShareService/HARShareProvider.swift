@@ -9,10 +9,11 @@ import Foundation
 import UIKit
 
 final class HARShareProvider: ShareProvider {
+
     var displayName: String { "har file" }
     var icon: UIImage? = UIImage(systemName: "doc.text")
 
-    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareService.Result? {
+    func shareData(for operations: [NetworkViewer.Operation]) async -> ShareResult? {
         return await Task.detached {
             let harContent = self.mapToHAR(for: operations)
             if let fileURL = self.createTempFile(with: harContent, filename: "operations.har") {
