@@ -100,7 +100,7 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
     }
 
     // MARK: - Lifecycle -
-    func viewWillAppear() { 
+    func viewWillAppear() {
         self.data = prepareData(operation: operation)
     }
 }
@@ -149,7 +149,8 @@ private extension OperationViewModel {
             startTime: startTime,
             endTime: endTime,
             duration: duration,
-            sectionsData: prepareSectionsData(operation: operation)
+            sectionsData: prepareSectionsData(operation: operation),
+            isWeb: operation.isWeb
         )
     }
 
@@ -159,7 +160,7 @@ private extension OperationViewModel {
 
         // Request
         var requestBodySize = "Empty"
-        if 
+        if
             request.body?.isEmpty == false,
             let size = byteCountFormatter.string(for: request.body?.count)
         {
@@ -172,7 +173,7 @@ private extension OperationViewModel {
 
         // Response
         var responseBodySize = "Empty"
-        if 
+        if
             operation.responseData.isEmpty == false,
             let size = byteCountFormatter.string(for: operation.responseData.count)
         {
