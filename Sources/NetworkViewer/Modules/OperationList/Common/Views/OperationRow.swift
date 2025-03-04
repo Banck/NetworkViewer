@@ -18,15 +18,24 @@ struct OperationRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Circle()
-                    .fixedSize()
-                    .foregroundColor(data.success ? .green : .red)
-                Text(data.method)
-                    .font(.system(size: 14, weight: .medium))
-                secondaryText(data.status)
-                secondaryText(data.date)
-                if let duration = data.duration {
-                    secondaryText(duration)
+                if !data.isWeb {
+                    Circle()
+                        .fixedSize()
+                        .foregroundColor(data.success ? .green : .red)
+                    Text(data.method)
+                        .font(.system(size: 14, weight: .medium))
+                    secondaryText(data.status)
+                    secondaryText(data.date)
+                    if let duration = data.duration {
+                        secondaryText(duration)
+                    }
+                } else {
+                    Text(data.method)
+                        .font(.system(size: 14, weight: .medium))
+                    secondaryText(data.date)
+                    if let duration = data.duration {
+                        secondaryText(duration)
+                    }
                 }
             }
             Text("[\(data.url)](\(data.url))")
@@ -60,6 +69,7 @@ extension OperationRow {
         let date: String
         let duration: String?
         let url: String
+        let isWeb: Bool
     }
 }
 
@@ -73,7 +83,8 @@ extension OperationRow {
                 status: "200 OK",
                 date: "15:18:20",
                 duration: "182.122 sec",
-                url: "https://google.com/api/images?id=124"
+                url: "https://google.com/api/images?id=124",
+                isWeb: false
             )
         )
     }

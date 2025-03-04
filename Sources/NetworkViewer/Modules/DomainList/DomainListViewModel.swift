@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Sakhabaev Egor on 10.11.2023.
 //
@@ -85,11 +85,14 @@ private extension DomainListViewModel {
             .map { (domain: String, operations: [NetworkViewer.Operation]) in
                 let icon: HDetailedRow.Data.Icon
                 let hasFailedRequest = operations.contains { $0.error != nil || ($0.response?.statusCode ?? 200) > 400 }
-                if hasFailedRequest  {
+                if operations.contains { $0.isWeb } {
+                    icon = .init(image: .init(systemName: "globe")!, color: .blue)
+                } else if hasFailedRequest  {
                     icon = .init(image: .init(systemName: "exclamationmark.triangle")!, color: .yellow)
                 } else {
                     icon = .init(image: .init(systemName: "folder")!, color: .blue)
                 }
+                
                 return DomainData(
                         cellData: .init(
                             id: domain,
