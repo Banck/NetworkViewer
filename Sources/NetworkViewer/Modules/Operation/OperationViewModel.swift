@@ -150,7 +150,7 @@ private extension OperationViewModel {
             endTime: endTime,
             duration: duration,
             sectionsData: prepareSectionsData(operation: operation),
-            isWeb: operation.isWeb
+            isFromWebView: operation.isFromWebView
         )
     }
 

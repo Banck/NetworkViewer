@@ -7,7 +7,7 @@ struct OperationData {
     var endTime: String
     var duration: String?
     var sectionsData: [SectionData]
-    var isWeb: Bool
+    var isFromWebView: Bool
 }
 
 extension OperationData {

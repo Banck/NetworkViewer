@@ -18,7 +18,7 @@ struct OperationRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                if !data.isWeb {
+                if !data.isFromWebView {
                     Circle()
                         .fixedSize()
                         .foregroundColor(data.success ? .green : .red)
@@ -69,7 +69,7 @@ extension OperationRow {
         let date: String
         let duration: String?
         let url: String
-        let isWeb: Bool
+        let isFromWebView: Bool
     }
 }
 
@@ -84,7 +84,7 @@ extension OperationRow {
                 date: "15:18:20",
                 duration: "182.122 sec",
                 url: "https://google.com/api/images?id=124",
-                isWeb: false
+                isFromWebView: false
             )
         )
     }

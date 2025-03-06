@@ -19,7 +19,7 @@ struct OperationScreen: View, OperationView {
             if let data = viewModel.data {
                 List() {
                     contentForMain(data)
-                    contentForSections(data.sectionsData, isWeb: data.isWeb)
+                    contentForSections(data.sectionsData, isWeb: data.isFromWebView)
                 }
                 .listStyle(.insetGrouped)
             } else {
@@ -45,7 +45,7 @@ struct OperationScreen: View, OperationView {
     func contentForMain(_ data: OperationData) -> some View {
         VStack(alignment: .leading, spacing: 8.0) {
             HStack(spacing: 12.0) {
-                if !data.isWeb {
+                if !data.isFromWebView {
                     HStack(spacing: 2.0) {
                         Image(systemName: data.success ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .font(.system(size: 11.0, weight: .regular))
@@ -58,7 +58,7 @@ struct OperationScreen: View, OperationView {
                     .font(.system(size: 11.0, weight: .bold))
                     .foregroundColor(.primary)
                 HStack(spacing: 12.0) {
-                    if !data.isWeb {
+                    if !data.isFromWebView {
                         HStack(spacing: 2.0) {
                             Image(systemName: "clock")
                                 .font(.system(size: 11.0, weight: .regular))
