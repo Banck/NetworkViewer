@@ -1,12 +1,3 @@
-//
-//  OperationSectionData.swift
-//
-//
-//  Created by Ivan Ipatov on 13.12.2023.
-//
-
-import Foundation
-
 struct OperationData {
     var success: Bool
     var status: String
@@ -16,6 +7,7 @@ struct OperationData {
     var endTime: String
     var duration: String?
     var sectionsData: [SectionData]
+    var isFromWebView: Bool
 }
 
 extension OperationData {

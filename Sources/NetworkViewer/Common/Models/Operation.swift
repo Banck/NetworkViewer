@@ -18,6 +18,7 @@ public extension NetworkViewer {
         let error: CustomError?
         let startAt: TimeInterval
         let endAt: TimeInterval?
+        let isFromWebView: Bool
 
         public init(
             id: String,
@@ -26,7 +27,8 @@ public extension NetworkViewer {
             responseData: Data,
             error: CustomError?,
             startAt: TimeInterval,
-            endAt: TimeInterval?
+            endAt: TimeInterval?,
+            isFromWebView: Bool = false
         ) {
             self.id = id
             self.request = request
@@ -35,6 +37,7 @@ public extension NetworkViewer {
             self.error = error
             self.startAt = startAt
             self.endAt = endAt
+            self.isFromWebView = isFromWebView
         }
     }
 }

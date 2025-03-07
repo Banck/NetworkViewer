@@ -19,7 +19,7 @@ struct OperationScreen: View, OperationView {
             if let data = viewModel.data {
                 List() {
                     contentForMain(data)
-                    contentForSections(data.sectionsData)
+                    contentForSections(data.sectionsData, isWeb: data.isFromWebView)
                 }
                 .listStyle(.insetGrouped)
             } else {
@@ -45,26 +45,30 @@ struct OperationScreen: View, OperationView {
     func contentForMain(_ data: OperationData) -> some View {
         VStack(alignment: .leading, spacing: 8.0) {
             HStack(spacing: 12.0) {
-                HStack(spacing: 2.0) {
-                    Image(systemName: data.success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .font(.system(size: 11.0, weight: .regular))
-                    Text(data.status)
-                        .font(.system(size: 11.0, weight: .semibold))
+                if !data.isFromWebView {
+                    HStack(spacing: 2.0) {
+                        Image(systemName: data.success ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .font(.system(size: 11.0, weight: .regular))
+                        Text(data.status)
+                            .font(.system(size: 11.0, weight: .semibold))
+                    }
+                    .foregroundColor(data.success ? .green : .red)
                 }
-                .foregroundColor(data.success ? .green : .red)
                 Text(data.method)
                     .font(.system(size: 11.0, weight: .bold))
                     .foregroundColor(.primary)
                 HStack(spacing: 12.0) {
-                    HStack(spacing: 2.0) {
-                        Image(systemName: "clock")
-                            .font(.system(size: 11.0, weight: .regular))
-                        if let duration = data.duration {
-                            Text(duration)
-                                .font(.system(size: 11.0, weight: .semibold))
+                    if !data.isFromWebView {
+                        HStack(spacing: 2.0) {
+                            Image(systemName: "clock")
+                                .font(.system(size: 11.0, weight: .regular))
+                            if let duration = data.duration {
+                                Text(duration)
+                                    .font(.system(size: 11.0, weight: .semibold))
+                            }
                         }
+                        .foregroundColor(.secondary)
                     }
-                    .foregroundColor(.secondary)
                     HStack(spacing: 2.0) {
                         Image(systemName: "calendar")
                             .font(.system(size: 11.0, weight: .regular))
@@ -82,8 +86,8 @@ struct OperationScreen: View, OperationView {
     }
 
     @ViewBuilder
-    func contentForSections(_ sectionsData: [OperationData.SectionData]) -> some View {
-        if sectionsData.isEmpty {
+    func contentForSections(_ sectionsData: [OperationData.SectionData], isWeb: Bool) -> some View {
+        if sectionsData.isEmpty || isWeb {
             EmptyView()
         } else {
             ForEach(sectionsData, id: \.id) { sectionData in

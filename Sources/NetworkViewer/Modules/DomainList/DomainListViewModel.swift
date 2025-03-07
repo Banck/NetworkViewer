@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Sakhabaev Egor on 10.11.2023.
 //
@@ -23,7 +23,9 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     }
 
     private var operationsByDomain: [String: [NetworkViewer.Operation]] {
-        Dictionary(grouping: filteredOperations) { URL(string: $0.request.url)?.host ?? $0.request.url }
+        Dictionary(grouping: filteredOperations) {
+            (URL(string: $0.request.url)?.host ?? $0.request.url) + ($0.isFromWebView ? " " : "")
+        }
     }
 
     @Published var domainsData: [DomainData] = []
@@ -85,11 +87,15 @@ private extension DomainListViewModel {
             .map { (domain: String, operations: [NetworkViewer.Operation]) in
                 let icon: HDetailedRow.Data.Icon
                 let hasFailedRequest = operations.contains { $0.error != nil || ($0.response?.statusCode ?? 200) > 400 }
-                if hasFailedRequest  {
+                
+                if operations.contains(where: { $0.isFromWebView }) {
+                    icon = .init(image: .init(systemName: "globe")!, color: .blue)
+                } else if hasFailedRequest  {
                     icon = .init(image: .init(systemName: "exclamationmark.triangle")!, color: .yellow)
                 } else {
                     icon = .init(image: .init(systemName: "folder")!, color: .blue)
                 }
+                
                 return DomainData(
                         cellData: .init(
                             id: domain,

@@ -127,7 +127,8 @@ private extension OperationListViewModel {
                     status: status,
                     date: dateFormatter.string(from: Date(timeIntervalSince1970: $0.startAt)),
                     duration: duration,
-                    url: $0.request.url
+                    url: $0.request.url,
+                    isFromWebView: $0.isFromWebView
                 )
             }
     }
