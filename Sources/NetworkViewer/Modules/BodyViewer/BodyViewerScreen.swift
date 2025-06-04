@@ -23,8 +23,17 @@ struct BodyViewerScreen: View, BodyViewerView {
     }
 
     @StateObject var viewModel: BodyViewerViewModel
-    @State private var textDisplayStyle: TextDisplayStyle = .json
+    @State private var textDisplayStyle: TextDisplayStyle
     @State private var isShowingFindNavigator = false
+
+    init(viewModel: BodyViewerViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        if viewModel.isJSONValid {
+            _textDisplayStyle = State(initialValue: .json)
+        } else {
+            _textDisplayStyle = State(initialValue: .raw)
+        }
+    }
 
     var body: some View {
         VStack {
@@ -101,6 +110,7 @@ struct BodyViewerScreen: View, BodyViewerView {
     }
 }
 """
+//    let jsonData = "<html>Test</html>"
         .data(using: .utf8)
     let module = BodyViewerConfigurator.createModule(title: "Response", data: jsonData ?? .init())
     return NavigationView {

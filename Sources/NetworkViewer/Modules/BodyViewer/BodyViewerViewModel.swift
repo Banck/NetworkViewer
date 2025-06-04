@@ -15,11 +15,18 @@ class BodyViewerViewModel: BodyViewerViewModelInterface, ObservableObject {
     private var output: BodyViewerModuleOutput?
     public let title: String
     public let text: String
+    public let isJSONValid: Bool
 
     init(title: String, data: Data, output: BodyViewerModuleOutput? = nil) {
         self.title = title
-        self.text = getJsonString(jsonObject: data.jsonObject) ?? "-"
         self.output = output
+        if let jsonObject = data.jsonObject, let value = getJsonString(jsonObject: jsonObject) {
+            self.text = value
+            self.isJSONValid = true
+        } else {
+            self.text = String(data: data, encoding: .utf8) ?? "-"
+            self.isJSONValid = false
+        }
     }
 }
 
