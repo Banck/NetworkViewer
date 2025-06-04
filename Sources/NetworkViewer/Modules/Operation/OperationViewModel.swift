@@ -187,7 +187,7 @@ private extension OperationViewModel {
         // Cell Data
         let requestCellData: [HDetailedRow.Data] = [
             .init(
-                id: "RequestBody",
+                id: "Request Body",
                 icon: .init(
                     image: .init(systemName: "arrow.up.circle.fill")!,
                     color: .blue
@@ -197,7 +197,7 @@ private extension OperationViewModel {
                 disclosureIndicator: request.body?.isEmpty == false
             ),
             .init(
-                id: "RequestHeaders",
+                id: "Request Headers",
                 icon: .init(
                     image: .init(systemName: "list.bullet.circle.fill")!,
                     color: .blue
@@ -210,7 +210,7 @@ private extension OperationViewModel {
 
         let responseCellData: [HDetailedRow.Data] = [
             .init(
-                id: "ResponseBody",
+                id: "Response Body",
                 icon: .init(
                     image: .init(systemName: "arrow.down.circle.fill")!,
                     color: .blue
@@ -220,7 +220,7 @@ private extension OperationViewModel {
                 disclosureIndicator: operation.responseData.isEmpty == false
             ),
             .init(
-                id: "ResponseHeaders",
+                id: "Response Headers",
                 icon: .init(
                     image: .init(systemName: "list.bullet.circle.fill")!,
                     color: .blue

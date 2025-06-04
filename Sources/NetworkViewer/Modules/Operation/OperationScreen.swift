@@ -94,13 +94,13 @@ struct OperationScreen: View, OperationView {
                 Section {
                     ForEach(sectionData.cellData, id: \.id) { cellData in
                         let data: Data? = switch cellData.id {
-                        case "RequestBody":
+                        case "Request Body":
                             viewModel.operationRequestBodyData()
-                        case "RequestHeaders":
+                        case "Request Headers":
                             viewModel.operationRequestHeadersData()
-                        case "ResponseBody":
+                        case "Response Body":
                             viewModel.operationResponseBodyData()
-                        case "ResponseHeaders":
+                        case "Response Headers":
                             viewModel.operationResponseHeadersData()
                         default:
                             nil
