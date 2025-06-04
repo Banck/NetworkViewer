@@ -13,9 +13,11 @@ import Foundation
 class BodyViewerViewModel: BodyViewerViewModelInterface, ObservableObject {
 
     private var output: BodyViewerModuleOutput?
+    public let title: String
     public let text: String
 
-    init(data: Data, output: BodyViewerModuleOutput? = nil) {
+    init(title: String, data: Data, output: BodyViewerModuleOutput? = nil) {
+        self.title = title
         self.text = getJsonString(jsonObject: data.jsonObject) ?? "-"
         self.output = output
     }

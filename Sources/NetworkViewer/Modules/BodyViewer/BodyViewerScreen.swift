@@ -56,6 +56,7 @@ struct BodyViewerScreen: View, BodyViewerView {
                 }
             }
         }
+        .navigationTitle(viewModel.title)
         .onAppear {
             viewModel.viewWillAppear()
         }
@@ -101,7 +102,7 @@ struct BodyViewerScreen: View, BodyViewerView {
 }
 """
         .data(using: .utf8)
-    let module = BodyViewerConfigurator.createModule(data: jsonData ?? .init())
+    let module = BodyViewerConfigurator.createModule(title: "Response", data: jsonData ?? .init())
     return NavigationView {
         module.view
     }

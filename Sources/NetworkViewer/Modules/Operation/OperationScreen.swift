@@ -111,7 +111,7 @@ struct OperationScreen: View, OperationView {
                                     HDetailedRow(data: cellData)
                                 },
                                 destination: {
-                                    BodyViewerConfigurator.createModule(data: data).view
+                                    BodyViewerConfigurator.createModule(title: cellData.id, data: data).view
                                 }
                             )
                             .listRowInsets(.zero)
