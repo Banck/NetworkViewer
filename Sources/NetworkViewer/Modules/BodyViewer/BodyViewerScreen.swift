@@ -69,6 +69,11 @@ struct BodyViewerScreen: View, BodyViewerView {
         .onAppear {
             viewModel.viewWillAppear()
         }
+        .onDisappear {
+            isShowingFindNavigator = false
+            UIApplication.endEditing()
+        }
+        .navigationBarTitleDisplayMode(.inline)
         .viFindNavigator(isPresented: $isShowingFindNavigator)
     }
 

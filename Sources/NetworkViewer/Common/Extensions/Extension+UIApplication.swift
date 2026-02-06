@@ -35,4 +35,8 @@ extension UIApplication {
         }
         return controller
     }
+    
+    static func endEditing() {
+        shared.windows.first?.endEditing(true)
+    }
 }
