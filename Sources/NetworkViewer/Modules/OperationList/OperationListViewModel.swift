@@ -13,22 +13,18 @@ import SwiftUI
 class OperationListViewModel: OperationListViewModelInterface, ObservableObject {
 
     private var output: OperationListModuleOutput?
-    private let operations: [NetworkViewer.Operation]
+    private let domainKey: String
+    private let domainSearchText: String
+    private var operations: [NetworkViewer.Operation] = []
+    private var operationsObserver: NSObjectProtocol?
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss"
         return formatter
     }()
-    private var numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = NumberFormatter.Style.decimal
-        formatter.maximumFractionDigits = 2
-        formatter.decimalSeparator = "."
-        return formatter
-    }()
-    private lazy var domain: String = {
-        URL(string: operations.first?.request.url ?? "")?.host ?? ""
-    }()
+    private var domain: String {
+        domainKey.trimmingCharacters(in: .whitespaces)
+    }
 
     var title: String {
         domain
@@ -37,16 +33,35 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
     @Published var isFavorite: Bool = false
     @Published var searchText: String = ""
 
+    /// - Parameters:
+    ///   - domainKey: `NetworkViewer.Operation.domainKey` of the operations to show.
+    ///   - domainSearchText: search of the domain list the screen was opened from; keeps applying to new operations.
     init(
-        operations: [NetworkViewer.Operation],
+        domainKey: String,
+        domainSearchText: String = "",
         output: OperationListModuleOutput? = nil
     ) {
-        self.operations = operations.sorted {
-            $0.startAt > $1.startAt
-        }
+        self.domainKey = domainKey
+        self.domainSearchText = domainSearchText
         self.output = output
+        reloadOperations()
+        operationsObserver = NotificationCenter.default.addObserver(
+            forName: NetworkViewer.operationsDidChange,
+            object: nil,
+            queue: nil
+        ) { [weak self] _ in
+            if Thread.isMainThread {
+                self?.didChangeOperations()
+            } else {
+                DispatchQueue.main.async { self?.didChangeOperations() }
+            }
+        }
     }
-    
+
+    deinit {
+        operationsObserver.map(NotificationCenter.default.removeObserver)
+    }
+
     func getAllOperations() -> [NetworkViewer.Operation] {
         operations
     }
@@ -61,7 +76,7 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
     }
 
     func deleteDomainOperations() {
-        NetworkViewer.deleteAllOperations(forDomain: domain)
+        NetworkViewer.deleteAllOperations(forDomainKey: domainKey)
     }
 
     func didChangeSearchText() {
@@ -86,6 +101,17 @@ class OperationListViewModel: OperationListViewModelInterface, ObservableObject 
 // MARK: - Private methods
 private extension OperationListViewModel {
 
+    func reloadOperations() {
+        operations = NetworkViewer.operations
+            .filter { $0.domainKey == domainKey && $0.matchesDomainSearch(domainSearchText) }
+            .sorted { $0.startAt > $1.startAt }
+    }
+
+    func didChangeOperations() {
+        reloadOperations()
+        applyFilters()
+    }
+
     func prepareOperations() {
         operationsData = operations
             .filter {
@@ -95,40 +121,17 @@ private extension OperationListViewModel {
                 || $0.request.method.lowercased() == searchText.lowercased()
             }
             .map {
-                let statusCode = HTTPStatusCode(rawValue: $0.response?.statusCode ?? $0.error?.code ?? 0)
-                let startDate = Date(timeIntervalSince1970: $0.startAt)
-                var status = "Unknown"
-                if let statusCode {
-                    status = "\(statusCode.rawValue) " + statusCode.description
-                }
-                var duration: String?
-                if let endAt = $0.endAt {
-                    let endDate = Date(timeIntervalSince1970: endAt)
-                    let timeInterval = endDate.timeIntervalSince(startDate)
-                    if timeInterval > 60 {
-                        numberFormatter.positiveSuffix = " min"
-                        numberFormatter.maximumFractionDigits = 2
-                        duration = numberFormatter.string(for: timeInterval / 60)
-                    }
-                    if timeInterval > 1 {
-                        numberFormatter.positiveSuffix = " sec"
-                        numberFormatter.maximumFractionDigits = 2
-                        duration = numberFormatter.string(for: timeInterval)
-                    } else {
-                        numberFormatter.maximumFractionDigits = 0
-                        numberFormatter.positiveSuffix = " ms"
-                        duration = numberFormatter.string(for: timeInterval * 1000)
-                    }
-                }
+                let status = OperationStatus($0)
                 return OperationRow.Data(
                     id: $0.id,
-                    success: (200...299).contains(statusCode?.rawValue ?? 0),
-                    method: $0.request.method,
-                    status: status,
+                    tone: status.tone,
+                    method: $0.request.displayMethod,
+                    status: status.text,
                     date: dateFormatter.string(from: Date(timeIntervalSince1970: $0.startAt)),
-                    duration: duration,
+                    duration: status.duration,
                     url: $0.request.url,
-                    isFromWebView: $0.isFromWebView
+                    errorDescription: status.errorDescription,
+                    webViewBadge: $0.webViewBadge
                 )
             }
     }

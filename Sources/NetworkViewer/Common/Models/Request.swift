@@ -32,6 +32,24 @@ public extension NetworkViewer {
     }
 }
 
+extension NetworkViewer.Request {
+
+    /// WebView may not tell the method of a request (e.g. after a redirect); it is never guessed.
+    var isMethodUnknown: Bool {
+        method.isEmpty || method == "-"
+    }
+
+    /// Method for JSON/HAR exports: empty when unknown.
+    var exportMethod: String {
+        isMethodUnknown ? "" : method
+    }
+
+    /// Method for the UI: a dash when unknown.
+    var displayMethod: String {
+        isMethodUnknown ? "—" : method
+    }
+}
+
 public extension NetworkViewer.Request {
 
     var cURL: String {
@@ -47,7 +65,7 @@ public extension NetworkViewer.Request {
 
         var command = [baseCommand]
 
-        if method != "GET" && method != "HEAD" {
+        if !isMethodUnknown && method != "GET" && method != "HEAD" {
             command.append("-X \(method)")
         }
 

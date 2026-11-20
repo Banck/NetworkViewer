@@ -13,14 +13,27 @@ public class NetworkViewer {
     public private(set) static var operations: [NetworkViewer.Operation] = [] {
         didSet {
             domainListInput?.updateOperations(operations)
+            NotificationCenter.default.post(name: operationsDidChange, object: nil)
         }
     }
     public static var invokeByShake: Bool = false
+    /// Posted on the thread that changed `operations`.
+    static let operationsDidChange = Notification.Name("NetworkViewer.operationsDidChange")
     static let favoriteService: FavoriteServiceProtocol = FavoriteService()
     private static var domainListInput: DomainListModuleInput?
 
     public static func addOperation(_ operation: NetworkViewer.Operation) {
         operations.append(operation)
+    }
+
+    /// Replaces the operation with the same `id` (keeping its position) or appends it if there is none.
+    /// Use it to complete an operation that was added before its response arrived.
+    public static func updateOperation(_ operation: NetworkViewer.Operation) {
+        if let index = operations.firstIndex(where: { $0.id == operation.id }) {
+            operations[index] = operation
+        } else {
+            operations.append(operation)
+        }
     }
 
     /**
@@ -47,10 +60,9 @@ public class NetworkViewer {
     static func deleteAllOperations() {
         operations.removeAll()
     }
-    static func deleteAllOperations(forDomain domain: String) {
-        operations.removeAll {
-            (URL(string: $0.request.url)?.host ?? $0.request.url) == domain
-        }
+    /// `domainKey` keeps WebView operations of a host apart from its native ones.
+    static func deleteAllOperations(forDomainKey domainKey: String) {
+        operations.removeAll { $0.domainKey == domainKey }
     }
 }
 

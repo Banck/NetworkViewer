@@ -20,13 +20,6 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
         formatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
         return formatter
     }()
-    private var numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = NumberFormatter.Style.decimal
-        formatter.maximumFractionDigits = 2
-        formatter.decimalSeparator = "."
-        return formatter
-    }()
     private var byteCountFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
@@ -40,7 +33,7 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
     }()
 
     var title: String {
-        "\(operation.request.method) /\(lastPathComponent)"
+        "\(operation.request.displayMethod) /\(lastPathComponent)"
     }
 
     var cURL: String {
@@ -109,48 +102,24 @@ class OperationViewModel: OperationViewModelInterface, ObservableObject {
 private extension OperationViewModel {
 
     func prepareData(operation: NetworkViewer.Operation) -> OperationData {
-        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? operation.error?.code ?? 0)
-        let startDate = Date(timeIntervalSince1970: operation.startAt)
-        var status = "Unknown"
-        if let statusCode {
-            status = "\(statusCode.rawValue) " + statusCode.description
-        }
-        var duration: String?
-        if let endAt = operation.endAt {
-            let endDate = Date(timeIntervalSince1970: endAt)
-            let timeInterval = endDate.timeIntervalSince(startDate)
-            if timeInterval > 60 {
-                numberFormatter.positiveSuffix = " min"
-                numberFormatter.maximumFractionDigits = 2
-                duration = numberFormatter.string(for: timeInterval / 60)
-            }
-            if timeInterval > 1 {
-                numberFormatter.positiveSuffix = " sec"
-                numberFormatter.maximumFractionDigits = 2
-                duration = numberFormatter.string(for: timeInterval)
-            } else {
-                numberFormatter.maximumFractionDigits = 0
-                numberFormatter.positiveSuffix = " ms"
-                duration = numberFormatter.string(for: timeInterval * 1000)
-            }
-        }
+        let status = OperationStatus(operation)
         let startTime = dateFormatter.string(from: Date(timeIntervalSince1970: operation.startAt))
         var endTime = "Unknown"
         if let endAt = operation.endAt {
             endTime = dateFormatter.string(from: Date(timeIntervalSince1970: endAt))
         }
-        let success = (200...299).contains(statusCode?.rawValue ?? 0)
 
         return OperationData(
-            success: success,
-            status: status,
+            tone: status.tone,
+            status: status.text,
             url: operation.request.url,
-            method: operation.request.method,
+            method: operation.request.displayMethod,
             startTime: startTime,
             endTime: endTime,
-            duration: duration,
+            duration: status.duration,
             sectionsData: prepareSectionsData(operation: operation),
-            isFromWebView: operation.isFromWebView
+            errorDescription: status.errorDescription,
+            webViewBadge: operation.webViewBadge
         )
     }
 
@@ -173,7 +142,10 @@ private extension OperationViewModel {
 
         // Response
         var responseBodySize = "Empty"
-        if
+        if operation.isFromWebView {
+            // WKNavigationDelegate does not expose response bodies.
+            responseBodySize = "Not available for WebView"
+        } else if
             operation.responseData.isEmpty == false,
             let size = byteCountFormatter.string(for: operation.responseData.count)
         {

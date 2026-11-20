@@ -106,8 +106,16 @@ extension OperationsToHARDataHandler {
         let requestBody = operation.request.body?.base64EncodedString() ?? ""
         let responseBody = prettifyJSON(from: operation.responseData) ?? operation.responseData.base64EncodedString()
 
-        let statusCode = operation.response?.statusCode ?? operation.error?.code ?? 0
-        let statusText = HTTPStatusCode(rawValue: statusCode)?.description ?? "Unknown"
+        let statusCode: Int
+        let statusText: String
+        if let response = operation.response {
+            statusCode = response.statusCode
+            statusText = HTTPStatusCode(rawValue: response.statusCode)?.description ?? ""
+        } else {
+            statusCode = operation.error?.code ?? 0
+            // HAR viewers show statusText, not custom fields: keep the error message there.
+            statusText = operation.error?.message ?? OperationStatus(operation).text
+        }
 
         let timings = calculateTimings(startAt: operation.startAt, endAt: operation.endAt)
 
@@ -115,7 +123,7 @@ extension OperationsToHARDataHandler {
             "startedDateTime": ISO8601DateFormatter().string(from: Date(timeIntervalSince1970: operation.startAt)),
             "time": timings.total,
             "request": [
-                "method": operation.request.method,
+                "method": operation.request.exportMethod,
                 "url": operation.request.url,
                 "httpVersion": "HTTP/1.1",
                 "headers": requestHeaders,
@@ -144,17 +152,10 @@ extension OperationsToHARDataHandler {
         ]
 
         if let error = operation.error {
-            entry["response"] = [
-                "status": error.code,
-                "statusText": error.message,
-                "headers": [],
-                "content": [
-                    "size": 0,
-                    "mimeType": "",
-                    "text": ""
-                ],
-                "headersSize": -1,
-                "bodySize": 0
+            // Custom HAR fields start with an underscore.
+            entry["_error"] = [
+                "code": error.code,
+                "message": error.message
             ]
         }
 

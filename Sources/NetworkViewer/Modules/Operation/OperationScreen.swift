@@ -19,7 +19,7 @@ struct OperationScreen: View, OperationView {
             if let data = viewModel.data {
                 List() {
                     contentForMain(data)
-                    contentForSections(data.sectionsData, isWeb: data.isFromWebView)
+                    contentForSections(data.sectionsData)
                 }
                 .listStyle(.insetGrouped)
             } else {
@@ -44,28 +44,27 @@ struct OperationScreen: View, OperationView {
     @ViewBuilder
     func contentForMain(_ data: OperationData) -> some View {
         VStack(alignment: .leading, spacing: 8.0) {
+            if let webViewBadge = data.webViewBadge {
+                WebViewBadge(text: webViewBadge)
+            }
             HStack(spacing: 12.0) {
-                if !data.isFromWebView {
-                    HStack(spacing: 2.0) {
-                        Image(systemName: data.success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .font(.system(size: 11.0, weight: .regular))
-                        Text(data.status)
-                            .font(.system(size: 11.0, weight: .semibold))
-                    }
-                    .foregroundColor(data.success ? .green : .red)
+                HStack(spacing: 2.0) {
+                    Image(systemName: data.tone.iconName)
+                        .font(.system(size: 11.0, weight: .regular))
+                    Text(data.status)
+                        .font(.system(size: 11.0, weight: .semibold))
                 }
+                .foregroundColor(data.tone.color)
                 Text(data.method)
                     .font(.system(size: 11.0, weight: .bold))
                     .foregroundColor(.primary)
                 HStack(spacing: 12.0) {
-                    if !data.isFromWebView {
+                    if let duration = data.duration {
                         HStack(spacing: 2.0) {
                             Image(systemName: "clock")
                                 .font(.system(size: 11.0, weight: .regular))
-                            if let duration = data.duration {
-                                Text(duration)
-                                    .font(.system(size: 11.0, weight: .semibold))
-                            }
+                            Text(duration)
+                                .font(.system(size: 11.0, weight: .semibold))
                         }
                         .foregroundColor(.secondary)
                     }
@@ -83,11 +82,21 @@ struct OperationScreen: View, OperationView {
                 .foregroundColor(.blue)
         }
         .standardListPadding()
+        if let errorDescription = data.errorDescription {
+            Section {
+                Text(errorDescription)
+                    .viTextSelection(isEnabled: true)
+                    .foregroundColor(.red)
+                    .standardListPadding()
+            } header: {
+                Text("Error")
+            }
+        }
     }
 
     @ViewBuilder
-    func contentForSections(_ sectionsData: [OperationData.SectionData], isWeb: Bool) -> some View {
-        if sectionsData.isEmpty || isWeb {
+    func contentForSections(_ sectionsData: [OperationData.SectionData]) -> some View {
+        if sectionsData.isEmpty {
             EmptyView()
         } else {
             ForEach(sectionsData, id: \.id) { sectionData in

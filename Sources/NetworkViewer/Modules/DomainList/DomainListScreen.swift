@@ -82,7 +82,10 @@ struct DomainListScreen: View {
                                 }
                         },
                         destination: {
-                            OperationListConfigurator.createModule(operations: viewModel.operations(forDomain: data.id)).view
+                            OperationListConfigurator.createModule(
+                                domainKey: data.id,
+                                domainSearchText: viewModel.searchText
+                            ).view
                         }
                     )
                     .listRowInsets(.zero)
@@ -131,6 +134,8 @@ struct DomainListScreen: View {
     let operations: [NetworkViewer.Operation] = [
         googleOperation, appleOperation, appleSecondOperation
     ]
+    // Operation lists read NetworkViewer.operations.
+    operations.forEach(NetworkViewer.addOperation)
     let module = DomainListConfigurator.createModule(operations: operations, shareService: ShareService())
     return module.view
 }
