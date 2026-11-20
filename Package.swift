@@ -19,6 +19,10 @@ let package = Package(
             name: "NetworkViewer",
             dependencies: [],
             resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "NetworkViewerTests",
+            dependencies: ["NetworkViewer"]
         )
     ]
 )
