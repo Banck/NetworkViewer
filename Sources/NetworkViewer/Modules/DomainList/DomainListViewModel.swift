@@ -23,9 +23,7 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     }
 
     private var operationsByDomain: [String: [NetworkViewer.Operation]] {
-        Dictionary(grouping: filteredOperations) {
-            (URL(string: $0.request.url)?.host ?? $0.request.url) + ($0.isFromWebView ? " " : "")
-        }
+        Dictionary(grouping: filteredOperations, by: \.domainKey)
     }
 
     @Published var domainsData: [DomainData] = []
@@ -49,10 +47,6 @@ class DomainListViewModel: DomainListViewModelInterface, ObservableObject {
     
     func getAllOperations() -> [NetworkViewer.Operation] {
         operations
-    }
-
-    func operations(forDomain domain: String) -> [NetworkViewer.Operation] {
-        operationsByDomain[domain] ?? []
     }
 
     func deleteAllOperations() {
@@ -111,13 +105,7 @@ private extension DomainListViewModel {
 
     func applyFilters() {
         withAnimation {
-            if searchText.isEmpty {
-                filteredOperations = operations
-            } else {
-                filteredOperations = operations.filter {
-                    $0.request.url.lowercased().contains(searchText.lowercased())
-                }
-            }
+            filteredOperations = operations.filter { $0.matchesDomainSearch(searchText) }
         }
     }
 }

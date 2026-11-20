@@ -121,7 +121,9 @@ struct OperationListScreen: View, OperationListView {
     let operations: [NetworkViewer.Operation] = [
         firstOperation, secondOperation, thirdOperation
     ]
-    let module = OperationListConfigurator.createModule(operations: operations)
+    NetworkViewer.deleteAllOperations()
+    operations.forEach(NetworkViewer.addOperation)
+    let module = OperationListConfigurator.createModule(domainKey: "google.com")
     return NavigationView {
         module.view
     }

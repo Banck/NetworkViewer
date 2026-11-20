@@ -15,13 +15,6 @@ struct OperationMapper {
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         return formatter
     }()
-    private static var numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = NumberFormatter.Style.decimal
-        formatter.maximumFractionDigits = 2
-        formatter.decimalSeparator = "."
-        return formatter
-    }()
     private static var byteCountFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
@@ -31,31 +24,9 @@ struct OperationMapper {
     }()
 
     static func jsonFrom(_ operation: NetworkViewer.Operation) -> String {
-        let statusCode = HTTPStatusCode(rawValue: operation.response?.statusCode ?? operation.error?.code ?? 0)
-        let startDate = Date(timeIntervalSince1970: operation.startAt)
-        var status = "Unknown"
-        if let statusCode {
-            status = "\(statusCode.rawValue) " + statusCode.description
-        }
-        var duration: String?
-        if let endAt = operation.endAt {
-            let endDate = Date(timeIntervalSince1970: endAt)
-            let timeInterval = endDate.timeIntervalSince(startDate)
-            if timeInterval > 60 {
-                numberFormatter.positiveSuffix = " min"
-                numberFormatter.maximumFractionDigits = 2
-                duration = numberFormatter.string(for: timeInterval / 60)
-            }
-            if timeInterval > 1 {
-                numberFormatter.positiveSuffix = " sec"
-                numberFormatter.maximumFractionDigits = 2
-                duration = numberFormatter.string(for: timeInterval)
-            } else {
-                numberFormatter.maximumFractionDigits = 0
-                numberFormatter.positiveSuffix = " ms"
-                duration = numberFormatter.string(for: timeInterval * 1000)
-            }
-        }
+        let operationStatus = OperationStatus(operation)
+        let status = operationStatus.text
+        let duration = operationStatus.duration
         let startTime = dateFormatter.string(from: Date(timeIntervalSince1970: operation.startAt))
         var endTime: String? = nil
         if let endAt = operation.endAt {
@@ -65,7 +36,7 @@ struct OperationMapper {
         """
         {
             "url": "\(operation.request.url)",
-            "method": "\(operation.request.method)",
+            "method": "\(operation.request.exportMethod)",
             "status": "\(status)",
             "start_at": "\(startTime) UTC",
             "end_at": "\(endTime != nil ? (endTime! + " UTC") : "null")",

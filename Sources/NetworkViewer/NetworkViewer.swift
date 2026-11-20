@@ -7,20 +7,36 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 public class NetworkViewer {
 
+    /// Changed only on the main thread; read it on the main thread.
     public private(set) static var operations: [NetworkViewer.Operation] = [] {
         didSet {
             domainListInput?.updateOperations(operations)
+            operationsDidChange.send()
         }
     }
     public static var invokeByShake: Bool = false
+    /// Fires on the main thread after `operations` changed.
+    static let operationsDidChange = PassthroughSubject<Void, Never>()
     static let favoriteService: FavoriteServiceProtocol = FavoriteService()
     private static var domainListInput: DomainListModuleInput?
 
+    /// Safe to call from any thread: the change is applied asynchronously on the main queue, in call order.
     public static func addOperation(_ operation: NetworkViewer.Operation) {
-        operations.append(operation)
+        onMain { operations.append(operation) }
+    }
+
+    /// Replaces the operation with the same `id`, keeping its position; does nothing if there is none
+    /// (for example, it was deleted). Use it to complete an operation added before its response arrived.
+    /// Safe to call from any thread: the change is applied asynchronously on the main queue, in call order.
+    public static func updateOperation(_ operation: NetworkViewer.Operation) {
+        onMain {
+            guard let index = operations.firstIndex(where: { $0.id == operation.id }) else { return }
+            operations[index] = operation
+        }
     }
 
     /**
@@ -45,12 +61,16 @@ public class NetworkViewer {
     }
 
     static func deleteAllOperations() {
-        operations.removeAll()
+        onMain { operations.removeAll() }
     }
-    static func deleteAllOperations(forDomain domain: String) {
-        operations.removeAll {
-            (URL(string: $0.request.url)?.host ?? $0.request.url) == domain
-        }
+    /// `domainKey` keeps WebView operations of a host apart from its native ones.
+    static func deleteAllOperations(forDomainKey domainKey: String) {
+        onMain { operations.removeAll { $0.domainKey == domainKey } }
+    }
+
+    /// Always queued, even from the main thread: the main queue keeps changes from different threads in call order.
+    private static func onMain(_ change: @escaping () -> Void) {
+        DispatchQueue.main.async(execute: change)
     }
 }
 
