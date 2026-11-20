@@ -1,5 +1,5 @@
 struct OperationData {
-    var success: Bool
+    var tone: OperationStatus.Tone
     var status: String
     var url: String
     var method: String
@@ -7,7 +7,8 @@ struct OperationData {
     var endTime: String
     var duration: String?
     var sectionsData: [SectionData]
-    var isFromWebView: Bool
+    var errorDescription: String?
+    var webViewBadge: String?
 }
 
 extension OperationData {

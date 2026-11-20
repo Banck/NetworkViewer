@@ -31,7 +31,6 @@ protocol DomainListViewModelInterface: ObservableObject {
     var unpinnedDomainCellsData: [HDetailedRow.Data] { get }
     var searchText: String { get }
 
-    func operations(forDomain domain: String) -> [NetworkViewer.Operation]
     func deleteAllOperations()
     
     func didChangeSearchText()
